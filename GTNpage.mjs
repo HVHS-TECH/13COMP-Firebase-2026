@@ -670,4 +670,5 @@ deleteLobbiesBtn.addEventListener("click", async () => {
 });
 /*******************************************************/
 //TO DO
-
+//Make it so you can't create a lobby if you are already in one, or already have one created
+//You must leave your current lobby to join someone else's

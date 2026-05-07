@@ -48,12 +48,11 @@ export function setupGTNgame() {
       console.log("User signed in:", currentUser.displayName || currentUser.email);
     } else {
       console.warn("No user signed in.");
-      window.location.href = "index.html";
+      // window.location.href = "index.html";
     }
   });
   fb_getPfp(currentUser);
   createGTNgameNumber();
-  transferlobbyData();
 
 }
 
@@ -63,11 +62,18 @@ export function setupGTNgame() {
 // Centralized function to generate random number for GTN game
 // Generates a random number between 1 and 100
 // Input: n/a
-// Return: The Random Number
+// Returns the random number
 /*******************************************************/
 function createGTNgameNumber() {
   randomNumber = Math.floor(Math.random() * 100) + 1;
-  console.log("Generated random number:", randomNumber);
+  console.log("%c Random Number Generated: " + randomNumber,
+  `
+  color: #ffffff;
+  background: linear-gradient(90deg, #390250, #b66ee0);
+  border-radius: 4px;
+  border: 2px solid #ff00fb;
+  `
+  );
   return randomNumber;
 }
 
@@ -77,3 +83,4 @@ function createGTNgameNumber() {
 
 /*******************************************************/
 // TO DO
+// The player with the most wins needs a crown displayed over their pfp
