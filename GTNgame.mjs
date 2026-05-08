@@ -69,7 +69,7 @@ function createGTNgameNumber() {
   console.log("%c Random Number Generated: " + randomNumber,
   `
   color: #ffffff;
-  background: linear-gradient(90deg, #390250, #b66ee0);
+  background: linear-gradient(180deg, #390250, #b66ee0);
   border-radius: 4px;
   border: 2px solid #ff00fb;
   `
