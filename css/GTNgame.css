@@ -9,9 +9,6 @@
   --antiflash-white: #F3F6F9;
   --text-muted: #9FB3C8;
 
-  --accent-glow: #00E0FF;
-  --accent-danger: #FF3C3C;
-
   --border-subtle: rgba(111, 224, 232, 0.2);
 }
 
@@ -33,29 +30,27 @@ body {
 h1 {
   text-align: center;
   color: var(--electric-blue);
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
+  font-size: 48px;
+  margin: 20px 0 30px;
 }
 
-h2, h3, p {
-  margin-top: 0;
+p {
+  margin-top: 6px;
 }
 
 button {
   background: linear-gradient(135deg, var(--electric-blue), var(--aero));
   color: var(--rich-black);
   border: none;
-  padding: 16px 24px;
+  padding: 16px 20px;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  margin: 10px 5px 10px 0;
   font-size: 18px;
 }
 
 button:hover {
   filter: brightness(1.05);
-  transform: translateY(-1px);
 }
 
 /*******************************************************/
@@ -67,9 +62,9 @@ nav.pages {
   align-items: center;
   background-color: var(--space-cadet);
   border: 1px solid var(--border-subtle);
-  padding: 1rem 1.25rem;
+  padding: 12px 16px;
   border-radius: 12px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 20px;
 }
 
 .pagesLeft {
@@ -77,11 +72,14 @@ nav.pages {
   gap: 60px;
 }
 
+.page {
+  font-size: 20px;
+  font-weight: 600;
+}
+
 .page a {
   color: var(--antiflash-white);
   text-decoration: none;
-  font-weight: 600;
-  font-size: 22px;
 }
 
 .page a:hover {
@@ -89,32 +87,138 @@ nav.pages {
 }
 
 .pfp {
-  width: 67px;
-  height: 67px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--electric-blue);
+}
+
+/*******************************************************/
+/* GAME LAYOUT */
+/*******************************************************/
+.gameLayout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+/*******************************************************/
+/* GAME PLAYERS */
+/*******************************************************/
+.gamePlayer {
+  width: 280px;
+  background-color: var(--panel-bg);
+
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+
+  padding: 22px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.gamePlayerInfo {
+  align-self: flex-start;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 15px;
+}
+
+.gamePlayer img {
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   object-fit: cover;
+
+  border: 3px solid var(--electric-blue);
+  padding: 4px;
+  background-color: var(--space-cadet);
+
+  box-shadow: 0 0 12px rgba(0, 224, 255, 0.25);
+}
+.gamePlayerName {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/*******************************************************/
+/* GUESS BOX */
+/*******************************************************/
+.gameGuessBox {
+  width: 400px;
+  background-color: var(--panel-bg);
+
   border: 2px solid var(--electric-blue);
+  border-radius: 16px;
+
+  padding: 28px;
+  text-align: center;
+
+  box-shadow: 0 0 16px rgba(0, 224, 255, 0.15);
+}
+
+.gameGuessBox h2 {
+  color: var(--electric-blue);
+  margin-bottom: 20px;
+}
+
+#guessInput {
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  text-align: center;
+
+  border-radius: 8px;
+  border: 2px solid var(--border-subtle);
+  background-color: var(--rich-black);
+
+  color: var(--antiflash-white); 
+  margin-bottom: 15px;
+}
+
+#guessInput::placeholder {
+  color: var(--antiflash-white);
+  opacity: 0.6; 
+}
+
+#guessInput:focus {
+  border-color: var(--electric-blue);
+  box-shadow: 0 0 8px rgba(0, 224, 255, 0.25);
+}
+
+#guessBtn {
+  width: 100%;
+}
+
+#guessStatus {
+  margin-top: 12px;
+  color: var(--aero);
+  font-weight: bold;
 }
 
 /*******************************************************/
 /* RESPONSIVE */
 /*******************************************************/
-@media (max-width: 700px) {
-  nav.pages {
+@media (max-width: 1000px) {
+  .gameLayout {
     flex-direction: column;
-    gap: 1rem;
+    align-items: center;
   }
 
-  .pagesLeft {
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  h1 {
-    font-size: 2.2rem;
-  }
-
-  button {
+  .gameGuessBox {
+    order: -1;
     width: 100%;
+    max-width: 400px;
+  }
+
+  .gamePlayer {
+    width: 100%;
+    max-width: 280px;
   }
 }

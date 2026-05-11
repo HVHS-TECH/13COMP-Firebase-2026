@@ -10,8 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script type="module" src="https://q5js.org/q5.js"></script>
-  <link rel="stylesheet" href="./css/GTNgame.css" />
-
+  <link rel="stylesheet" href="./css/GTNgame.css">
 </head>
 
 <body>
@@ -21,33 +20,46 @@
       <div class="page"><a href="leaderboards.html">Leaderboards</a></div>
       <div class="page"><a href="admin.html">ADMIN LOGIN</a></div>
     </div>
+
     <div class="pagesProfile">
-      <img id="pfp" class="pfp" src="images/defaultpfp.png" alt="Profile Picture" />
+      <img id="pfp" class="pfp" src="images/defaultpfp.png" alt="Profile Picture">
     </div>
   </nav>
 
   <h1>Guess The Number</h1>
 
-  <div class="playersBox">
-    <div class="playerCard">
-      <img id="player1Pfp" src="images/defaultpfp.png">
-      <p id="player1Name">Player 1</p>
+  <!--*********** GAME CONTENT HTML ***********-->
+  <div class="gameLayout">
+
+    <div class="gamePlayer leftPlayer">
+      <p class="gamePlayerInfo">Player 1<br>Wins: 0</p>
+      <img id="player1Pfp" src="images/defaultpfp.png" alt="Player 1 Profile Picture">
+      <p id="player1Name" class="gamePlayerName">Player 1</p>
     </div>
 
-    <div class="playerCard">
-      <img id="player2Pfp" src="images/defaultpfp.png">
-      <p id="player2Name">Player 2</p>
+    <div class="gameGuessBox">
+      <h2>Guess The Number</h2>
+
+      <input id="guessInput" type="number" min="1" max="100" placeholder="Enter guess">
+
+      <button id="guessBtn">Submit Guess</button>
+
+      <p id="guessStatus">Waiting for guess...</p>
     </div>
+
+    <div class="gamePlayer rightPlayer">
+      <p class="gamePlayerInfo">Player 2<br>Wins: 0</p>
+      <img id="player2Pfp" src="images/defaultpfp.png" alt="Player 2 Profile Picture">
+      <p id="player2Name" class="gamePlayerName">Player 2</p>
+    </div>
+
   </div>
+  <!--*********** GAME CONTENT HTML ***********-->
 
-
-
-  <script type="module" src="./GTNgame.mjs"></script>
   <script type="module">
     import { setupGTNgame } from './GTNgame.mjs';
     setupGTNgame();
   </script>
-
 </body>
 
 </html>

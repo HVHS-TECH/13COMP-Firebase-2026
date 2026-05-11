@@ -24,6 +24,12 @@ console.log(
 let currentUser = null; // will hold the authenticated user object
 let confirmState = false; // for menu button confirmation
 let randomNumber;
+let gameID = localStorage.getItem("GTNgameID");
+const GAMEREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID);
+
+let isPlayer1 = false;
+let isPlayer2 = false;
+let isMyTurn = false;
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
@@ -70,19 +76,21 @@ function createGTNgameNumber() {
   console.log("%c Random Number Generated: " + randomNumber,
   `
   color: #ffffff;
-  background: linear-gradient(180deg, #390250, #b66ee0);
+  background: linear-gradient(180deg, #5c1879, #b66ee0);
   border-radius: 4px;
-  border: 2px solid #ff00fb;
+  border: 2px solid #000000;
   `
   );
+
+  
+  update(GAMEREF, {
+  gameNum: randomNumber
+  });
   return randomNumber;
 }
 
 
 function loadActiveGame() {
- const gameID = localStorage.getItem("GTNgameID");
-
- const GAMEREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID);
 
    onValue(GAMEREF, (snapshot) => {
     if (!snapshot.exists()) {
@@ -117,6 +125,24 @@ function playerPFPDisplay(gameData) {
 
   if (p1Name) p1Name.innerText = gameData.player1Name || "Player 1";
   if (p2Name) p2Name.innerText = gameData.player2Name || "Player 2";
+}
+
+function turnSetup(){
+  update(GAMEREF, {
+    turn: currentUser.uid
+  });
+}
+
+
+function submitGuess(){
+  const guessInput = document.getElementById("guessInput");
+  const guess = parseInt(guessInput.value);
+
+  if (isNaN(guess) || guess < 1 || guess > 100) {
+    alert("Please enter a valid number between 1 and 100.");
+    return;
+  }
+
 }
 
 /*******************************************************/
