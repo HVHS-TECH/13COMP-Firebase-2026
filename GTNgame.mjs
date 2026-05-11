@@ -183,7 +183,7 @@ function submitGuess() {
       return;
     }
 
-    document.getElementById("guessStatus").innerText = guess;
+    document.getElementById("guessStatus").innerText = "Guessed: " + guess;
     console.log("Player guessed: " + guess);
     displayGuessResult(guess, gameData);
     turnSwitch(gameData);
@@ -248,5 +248,9 @@ function turnIndicatorDisplay(gameData) {
 /*******************************************************/
 // TO DO
 // The player with the most wins needs a crown displayed over their pfp
-// Turn indicator needs to be added
+// Turn indicator needs to be improved
 // Add array with each players guesses to be displayed
+// Game over screen when someone wins with bakc to lobby button
+// Display list of guesses for each player to both players
+// Add 🔥 when guesses are within 10 numbers
+/*******************************************************/
