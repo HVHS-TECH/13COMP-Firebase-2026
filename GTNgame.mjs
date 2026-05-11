@@ -30,6 +30,8 @@ const GAMEREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID);
 let isPlayer1 = false;
 let isPlayer2 = false;
 let isMyTurn = false;
+let player1Guesses = [];
+let player2Guesses = [];
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
@@ -142,18 +144,24 @@ function playerPFPDisplay(gameData) {
   if (p2Name) p2Name.innerText = gameData.player2Name || "Player 2";
 }
 
-
+/*******************************************************/
+// setupGuessButton
+// attaches click event to guess button
+// calls submitGuess when button is pressed
+/*******************************************************/
 function setupGuessButton() {
-
   const guessBtn = document.getElementById("guessBtn");
-
   guessBtn.addEventListener("click", submitGuess);
-
 }
 
-
+/*******************************************************/
+//submitGuess
+// Handles logic for entering guesses
+// Validates input: checks if 1 < guess < 100, and checks for if it's the player's turn
+// If valid, displays the guess and calls displayGuessResult() to show if guess is too high, low, or correct
+// Then calls turnSwitch() to update the turn in Firebase
+/*******************************************************/
 function submitGuess() {
-
   const guessInput = document.getElementById("guessInput");
   const guess = parseInt(guessInput.value);
 
@@ -169,12 +177,6 @@ function submitGuess() {
     }
 
     const gameData = snapshot.val();
-
-
-    console.log("Current turn: " + gameData.turn);
-    console.log("Current user: " + currentUser.uid);
-    console.log("Player 1: " + gameData.player1);
-    console.log("Player 2: " + gameData.player2);
     if (gameData.turn !== currentUser.uid) {
       alert("It is not your turn.");
       return;
@@ -186,11 +188,17 @@ function submitGuess() {
     turnSwitch(gameData);
   });
 }
-
+/*******************************************************/
+//turnSwitch
+// Switches the turn between player 1 and player 2 in Firebase after a guess is made
+// Compares stored turn uid with player1 and player2 uid to determine whose turn is next
+// Called by submitGuess() after validating the guess and displaying the result
+// Only updates turn after guess has been processed.
+/*******************************************************/
 
 function turnSwitch(gameData) {
 
-  if (gameData.player1 === currentUser.uid) {
+  if (gameData.player1 === gameData.turn) {
     update(GAMEREF, {
       turn: gameData.player2
     });
@@ -203,5 +211,25 @@ function turnSwitch(gameData) {
 }
 
 /*******************************************************/
+//displayGuessResult
+// Displays the result of the player's guess (too high, too low, or correct)
+// Compares the player's guess to the random number stored in Firebase and updates the UI accordingly
+// Called by submitGuess() after validating the guess and logging it to the console
+/*******************************************************/
+function displayGuessResult(guess, gameData) {
+  const RESULT = document.getElementById("guessResultDisplay");
+
+  if (guess < gameData.gameNum) {
+    RESULT.innerText = "Too low!";
+  } else if (guess > gameData.gameNum) {
+    RESULT.innerText = "Too high!";
+  } else {
+    RESULT.innerText = "Correct!";
+  }
+}
+
+/*******************************************************/
 // TO DO
 // The player with the most wins needs a crown displayed over their pfp
+// Turn indicator needs to be added
+// Add array with each players guesses to be displayed
