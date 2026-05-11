@@ -60,6 +60,7 @@ export function setupGTNgame() {
   fb_getPfp(currentUser);
   loadActiveGame();
   createGTNgameNumber();
+  setupGuessButton();
 
 }
 
@@ -74,7 +75,7 @@ export function setupGTNgame() {
 function createGTNgameNumber() {
   randomNumber = Math.floor(Math.random() * 100) + 1;
   console.log("%c Random Number Generated: " + randomNumber,
-  `
+    `
   color: #ffffff;
   background: linear-gradient(180deg, #5c1879, #b66ee0);
   border-radius: 4px;
@@ -82,9 +83,9 @@ function createGTNgameNumber() {
   `
   );
 
-  
+
   update(GAMEREF, {
-  gameNum: randomNumber
+    gameNum: randomNumber
   });
   return randomNumber;
 }
@@ -92,13 +93,13 @@ function createGTNgameNumber() {
 
 function loadActiveGame() {
 
-   onValue(GAMEREF, (snapshot) => {
+  onValue(GAMEREF, (snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Active game no longer exists.");
       // window.location.href = "GTNpage.html";
       return;
     }
-        const gameData = snapshot.val();
+    const gameData = snapshot.val();
 
     if (gameData.player1 === currentUser.uid || gameData.player2 === currentUser.uid) {
       console.log("Player is part of this game.");
@@ -110,7 +111,7 @@ function loadActiveGame() {
 
     playerPFPDisplay(gameData);
 
-});
+  });
 }
 
 function playerPFPDisplay(gameData) {
@@ -127,14 +128,23 @@ function playerPFPDisplay(gameData) {
   if (p2Name) p2Name.innerText = gameData.player2Name || "Player 2";
 }
 
-function turnSetup(){
+function turnSetup() {
   update(GAMEREF, {
     turn: currentUser.uid
   });
 }
 
+function setupGuessButton() {
 
-function submitGuess(){
+  const guessBtn = document.getElementById("guessBtn");
+
+  guessBtn.addEventListener("click", submitGuess);
+
+}
+
+
+function submitGuess() {
+
   const guessInput = document.getElementById("guessInput");
   const guess = parseInt(guessInput.value);
 
@@ -143,6 +153,37 @@ function submitGuess(){
     return;
   }
 
+  get(GAMEREF).then((snapshot) => {
+    if (!snapshot.exists()) {
+      alert("Game does not exist anymore.");
+      return;
+    }
+
+    const gameData = snapshot.val();
+
+    if (gameData.turn !== currentUser.uid) {
+      alert("It is not your turn.");
+      return;
+    }
+
+    document.getElementById("guessStatus").innerText = guess;
+    console.log("Player guessed: " + guess);
+    displayGuessResult(guess, gameData);
+    turnSwitch(gameData);
+  });
+}
+function turnSwitch(gameData) {
+
+  if (gameData.player1 === currentUser.uid) {
+    update(GAMEREF, {
+      turn: gameData.player2
+    });
+
+  } else {
+    update(GAMEREF, {
+      turn: gameData.player1
+    });
+  }
 }
 
 /*******************************************************/
