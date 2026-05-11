@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<nav class="pages">
+  <nav class="pages">
     <div class="pagesLeft">
       <div class="page"><a href="game1.html">Gnome Dodger</a></div>
       <div class="page"><a href="leaderboards.html">Leaderboards</a></div>
@@ -28,19 +28,19 @@
 
   <h1>Guess The Number</h1>
 
-        <div class="playerCard" id="player1Card">
-        <h3 class="playerLabel">Host</h3>
-        <img id="player1Pfp" class="playerPfp" src="images/defaultpfp.png" alt="Host Profile Picture" />
-      </div>
+  <div class="playersBox">
+    <div class="playerCard">
+      <img id="player1Pfp" src="images/defaultpfp.png">
+      <p id="player1Name">Player 1</p>
+    </div>
 
-      <div class="versusText">VS</div>
+    <div class="playerCard">
+      <img id="player2Pfp" src="images/defaultpfp.png">
+      <p id="player2Name">Player 2</p>
+    </div>
+  </div>
 
-      <div class="playerCard" id="player2Card">
-        <h3 class="playerLabel">Player 2</h3>
-        <img id="player2Pfp" class="playerPfp" src="images/defaultpfp.png" alt="Player 2 Profile Picture" />
-      </div>
 
-      
 
   <script type="module" src="./GTNgame.mjs"></script>
   <script type="module">

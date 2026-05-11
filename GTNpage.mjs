@@ -223,7 +223,7 @@ function lobbyBtn(lobbyDiv, lobbyID) {
 /*******************************************************/
 async function ownerCheck(Btn, lobbyID) {
   try {
-    const LOBBBYREF  = "GTN/lobbies/" + lobbyID + "/player1";
+    const LOBBBYREF = "GTN/lobbies/" + lobbyID + "/player1";
     const DATAREF = ref(FB_GAMEDB, LOBBBYREF);
     const LOBBYDIV = Btn.parentElement;
 
@@ -272,7 +272,7 @@ async function lobbyJoin(lobbyID, Btn) {
       window.location.href = "index.html";
       return false;
     }
-    const LOBBBYREF  = "GTN/lobbies/" + lobbyID;
+    const LOBBBYREF = "GTN/lobbies/" + lobbyID;
     const DATAREF = ref(FB_GAMEDB, LOBBBYREF);
     const SNAPSHOT = await get(DATAREF);
     if (!SNAPSHOT.exists()) {
@@ -429,7 +429,7 @@ function lobbyDetect() {
 //Ensures the lobby list is always up to date for all users viewing the page
 /*******************************************************/
 function lobbyGeneration(LOBBIES) {
-  
+
   const lobbyContainer = document.getElementById("lobbyElm");
   lobbyContainer.innerHTML = "";
   if (!LOBBIES) {
@@ -542,26 +542,28 @@ function lobbyStartGameCheck(LOBBIES) {
 
       const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
       remove(LOBBYREF);
-
+      localStorage.setItem("GTNgameID", lobbyID);
       window.location.href = "GTNgame.html";
     }
   });
 }
 
-function lobbyTransfer(lobbyID, lobbyData) {
-  if (!lobbyData.active){
-    const TRANSFERREF = ref(FB_GAMEDB, "GTN/activeGames/" + lobbyID);
-    set(TRANSFERREF, {
-      player1: lobbyData.player1,
-        player2: lobbyData.player2,
-        player1Name: lobbyData.player1Name,
-        player2Name: lobbyData.player2Name,
-        player1Pfp: lobbyData.player1Pfp,
-        player2Pfp: lobbyData.player2Pfp,
-        gameActive: true,
-      });
-    }
+async function lobbyTransfer(lobbyID, lobbyData) {
+  const TRANSFERREF = ref(FB_GAMEDB, "GTN/activeGames/" + lobbyID);
+
+  await set(TRANSFERREF, {
+    player1: lobbyData.player1,
+    player2: lobbyData.player2,
+    player1Name: lobbyData.player1Name,
+    player2Name: lobbyData.player2Name,
+    player1Pfp: lobbyData.player1Pfp || null,
+    player2Pfp: lobbyData.player2Pfp || null,
+    gameActive: true,
+  });
+
+  console.log("Lobby transferred to activeGames:", lobbyID);
 }
+
 /*******************************************************/
 //sendToGame
 //Starts the game by updating firebase
@@ -672,3 +674,5 @@ deleteLobbiesBtn.addEventListener("click", async () => {
 //TO DO
 //Make it so you can't create a lobby if you are already in one, or already have one created
 //You must leave your current lobby to join someone else's
+// Sort p1 and p2 into different branches firebase ( ADD TO DOCUMENTATION FOR ITERATIVE)
+// Make a class for LOBBIES instead of passing it into loads of functions

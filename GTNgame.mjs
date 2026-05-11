@@ -52,6 +52,7 @@ export function setupGTNgame() {
     }
   });
   fb_getPfp(currentUser);
+  loadActiveGame();
   createGTNgameNumber();
 
 }
@@ -78,8 +79,45 @@ function createGTNgameNumber() {
 }
 
 
+function loadActiveGame() {
+ const gameID = localStorage.getItem("GTNgameID");
 
+ const GAMEREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID);
 
+   onValue(GAMEREF, (snapshot) => {
+    if (!snapshot.exists()) {
+      console.warn("Active game no longer exists.");
+      // window.location.href = "GTNpage.html";
+      return;
+    }
+        const gameData = snapshot.val();
+
+    if (gameData.player1 === currentUser.uid || gameData.player2 === currentUser.uid) {
+      console.log("Player is part of this game.");
+    } else {
+      console.warn("Player is not part of this game.");
+      // window.location.href = "GTNpage.html";
+      return;
+    }
+
+    playerPFPDisplay(gameData);
+
+});
+}
+
+function playerPFPDisplay(gameData) {
+  const p1Pfp = document.getElementById("player1Pfp");
+  const p2Pfp = document.getElementById("player2Pfp");
+
+  const p1Name = document.getElementById("player1Name");
+  const p2Name = document.getElementById("player2Name");
+
+  if (p1Pfp) p1Pfp.src = gameData.player1Pfp || "images/defaultpfp.png";
+  if (p2Pfp) p2Pfp.src = gameData.player2Pfp || "images/defaultpfp.png";
+
+  if (p1Name) p1Name.innerText = gameData.player1Name || "Player 1";
+  if (p2Name) p2Name.innerText = gameData.player2Name || "Player 2";
+}
 
 /*******************************************************/
 // TO DO
