@@ -203,6 +203,32 @@ nav.pages {
 }
 
 /*******************************************************/
+/* GAME RESULT DISPLAY */
+/*******************************************************/
+#guessResultDisplay {
+  margin-top: 18px;
+  padding: 12px;
+
+  background-color: var(--space-cadet);
+  color: var(--antiflash-white);
+  border-radius: 8px;
+
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.turnDisplay {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.pfpTurn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+/*******************************************************/
 /* RESPONSIVE */
 /*******************************************************/
 @media (max-width: 1000px) {

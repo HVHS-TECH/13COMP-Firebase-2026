@@ -119,6 +119,7 @@ function loadActiveGame() {
     }
 
     playerPFPDisplay(gameData);
+    turnIndicatorDisplay(gameData);
 
   });
 }
@@ -208,6 +209,8 @@ function turnSwitch(gameData) {
       turn: gameData.player1
     });
   }
+
+
 }
 
 /*******************************************************/
@@ -228,6 +231,20 @@ function displayGuessResult(guess, gameData) {
   }
 }
 
+function turnIndicatorDisplay(gameData) {
+  const pfpTurn = document.querySelector(".pfpTurn");
+
+  if (gameData.turn === gameData.player1) {
+    pfpTurn.src = gameData.player1Pfp;
+  } else {
+    pfpTurn.src = gameData.player2Pfp;
+  }
+
+  pfpTurn.classList.remove("yourTurn");
+  if (gameData.turn === currentUser.uid) {
+    pfpTurn.classList.add("yourTurn");
+  }
+}
 /*******************************************************/
 // TO DO
 // The player with the most wins needs a crown displayed over their pfp
