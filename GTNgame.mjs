@@ -90,7 +90,14 @@ function createGTNgameNumber() {
   return randomNumber;
 }
 
-
+/**********************************************************/
+//loadActiveGame
+// Loads the active game data from Firebase and sets up real-time listeners
+// Checks if the current user is part of the game and updates the UI accordingly
+// Calls playerPFPDisplay() to show player profile pictures and names
+// Input: n/a
+// Return n/a
+/*******************************************************/
 function loadActiveGame() {
 
   onValue(GAMEREF, (snapshot) => {
@@ -114,6 +121,13 @@ function loadActiveGame() {
   });
 }
 
+/**********************************************************/
+//playerPFPDisplay
+// Displays player profile pictures and names in the game lobby
+// Uses default pfp if player has left, or player has no pfp set
+// Called by loadActiveGame() to update the UI whenever game data changes
+// Return: n/a
+/*******************************************************/
 function playerPFPDisplay(gameData) {
   const p1Pfp = document.getElementById("player1Pfp");
   const p2Pfp = document.getElementById("player2Pfp");
@@ -128,11 +142,6 @@ function playerPFPDisplay(gameData) {
   if (p2Name) p2Name.innerText = gameData.player2Name || "Player 2";
 }
 
-function turnSetup() {
-  update(GAMEREF, {
-    turn: currentUser.uid
-  });
-}
 
 function setupGuessButton() {
 
@@ -161,6 +170,11 @@ function submitGuess() {
 
     const gameData = snapshot.val();
 
+
+    console.log("Current turn: " + gameData.turn);
+    console.log("Current user: " + currentUser.uid);
+    console.log("Player 1: " + gameData.player1);
+    console.log("Player 2: " + gameData.player2);
     if (gameData.turn !== currentUser.uid) {
       alert("It is not your turn.");
       return;
@@ -172,6 +186,8 @@ function submitGuess() {
     turnSwitch(gameData);
   });
 }
+
+
 function turnSwitch(gameData) {
 
   if (gameData.player1 === currentUser.uid) {
