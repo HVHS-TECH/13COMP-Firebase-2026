@@ -26,6 +26,7 @@ let confirmState = false; // for menu button confirmation
 let randomNumber;
 let gameID = localStorage.getItem("GTNgameID");
 const GAMEREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID);
+let USERREF = null;
 
 let isPlayer1 = false;
 let isPlayer2 = false;
@@ -54,15 +55,19 @@ export function setupGTNgame() {
     if (user) {
       currentUser = user;
       console.log("User signed in:", currentUser.displayName || currentUser.email);
+      USERREF = ref(FB_GAMEDB, "userInfo/" + currentUser.uid);
+     
+      fb_getPfp(currentUser);
+      loadActiveGame();
+      loadPlayerData();
+      createGTNgameNumber();
+      setupGuessButton();
+
     } else {
       console.warn("No user signed in.");
       // window.location.href = "index.html";
     }
   });
-  fb_getPfp(currentUser);
-  loadActiveGame();
-  createGTNgameNumber();
-  setupGuessButton();
 
 }
 
@@ -119,11 +124,23 @@ function loadActiveGame() {
     }
 
     playerPFPDisplay(gameData);
-    turnIndicatorDisplay(gameData);
+    displayTurn(gameData);
 
   });
 }
 
+function loadPlayerData() {
+  get(USERREF).then((snapshot) => {
+    if (!snapshot.exists()) {
+      console.warn("Active game no longer exists.");
+      // window.location.href = "GTNpage.html";
+      return;
+    }
+    const userData = snapshot.val();
+    displayCrown(GAMEREF, userData);
+
+  });
+}
 /**********************************************************/
 //playerPFPDisplay
 // Displays player profile pictures and names in the game lobby
@@ -231,7 +248,13 @@ function displayGuessResult(guess, gameData) {
   }
 }
 
-function turnIndicatorDisplay(gameData) {
+/*******************************************************/
+//displayTurn
+// Checks whose turn it is based on the turn uid stored in Firebase
+// Updates turn indicator pfp in the guess box
+
+/*******************************************************/
+function displayTurn(gameData) {
   const pfpTurn = document.querySelector(".pfpTurn");
 
   if (gameData.turn === gameData.player1) {
@@ -245,12 +268,79 @@ function turnIndicatorDisplay(gameData) {
     pfpTurn.classList.add("yourTurn");
   }
 }
+
+/*******************************************************/
+//displayCrown
+// Displays a crown over the profile picture of the player with the most wins
+// Compares the win counts of player 1 and player 2 stored in Firebase and updates the UI to show a crown over the player with more wins
+// Input: n/a
+// Return: n/a
+/*******************************************************/
+function displayCrown(GAMEREF) {
+  const p1Crown = document.getElementById("player1Crown");
+  const p2Crown = document.getElementById("player2Crown");
+
+  onValue(GAMEREF, (snapshot) => {
+    if (!snapshot.exists()) {
+      console.error("Game data not found for crown display.");
+      return;
+    }
+    const gameData = snapshot.val();
+    const p1ID = gameData.player1;
+    const p2ID = gameData.player2;
+
+    const p1Ref = ref(FB_GAMEDB, "userInfo/" + p1ID + "/GTNwins");
+    const p2Ref = ref(FB_GAMEDB, "userInfo/" + p2ID + "/GTNwins");
+
+    get(p1Ref).then((p1Snap) => {
+      let p1Wins = 0;
+
+      if (p1Snap.exists()) {
+        p1Wins = p1Snap.val();
+      }
+
+      get(p2Ref).then((p2Snap) => {
+        let p2Wins = 0;
+
+        if (p2Snap.exists()) {
+          p2Wins = p2Snap.val();
+        }
+
+        displayWins(p1Wins, p2Wins);
+
+
+        if (p1Wins > p2Wins) {
+          p1Crown.style.display = "block";
+          p2Crown.style.display = "none";
+        } else if (p2Wins > p1Wins) {
+          p1Crown.style.display = "none";
+          p2Crown.style.display = "block";
+        } else {
+          p1Crown.style.display = "none";
+          p2Crown.style.display = "none";
+        }
+      });
+    });
+  });
+}
+
+function displayWins(p1Wins, p2Wins) {
+  const p1Info = document.querySelector(".leftPlayer .gamePlayerInfo");
+  const p2Info = document.querySelector(".rightPlayer .gamePlayerInfo");
+
+
+  console.log(`Player 1 Wins: ${p1Wins}, Player 2 Wins: ${p2Wins}`);
+  p1Info.innerText = ` Player 1 \n
+  Wins: ${p1Wins}`;
+  p2Info.innerText = ` Player 2 \n
+  Wins: ${p2Wins}`;
+}
 /*******************************************************/
 // TO DO
-// The player with the most wins needs a crown displayed over their pfp
 // Turn indicator needs to be improved
 // Add array with each players guesses to be displayed
 // Game over screen when someone wins with bakc to lobby button
 // Display list of guesses for each player to both players
 // Add 🔥 when guesses are within 10 numbers
+// Add wins from firebase to display
 /*******************************************************/

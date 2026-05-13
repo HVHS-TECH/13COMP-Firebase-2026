@@ -120,6 +120,7 @@ nav.pages {
   align-items: center;
 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  position: relative;
 }
 
 .gamePlayerInfo {
@@ -129,7 +130,7 @@ nav.pages {
   margin-bottom: 15px;
 }
 
-.gamePlayer img {
+.gamePlayer img:not(.crown) {
   width: 150px;
   height: 150px;
   border-radius: 50%;
@@ -146,6 +147,23 @@ nav.pages {
   font-size: 18px;
   font-weight: bold;
 }
+
+/*******************************************************/
+/* CROWN */
+/*******************************************************/
+.crown {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 250px;
+  height: auto;
+  border: none;
+  display: none;
+}
+
+
 
 /*******************************************************/
 /* GUESS BOX */
