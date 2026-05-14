@@ -260,8 +260,10 @@ function displayGuessResult(guess, gameData) {
     RESULT.innerText = "Too low!";
   } else if (guess > gameData.gameNum) {
     RESULT.innerText = "Too high!";
-  } else {
+  } else if (guess === gameData.gameNum) {
     RESULT.innerText = "Correct!";
+  } else if (guess>= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
+    RESULT.innerText = "Close! 🔥";
   }
 }
 
