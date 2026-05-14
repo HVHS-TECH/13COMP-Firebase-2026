@@ -560,6 +560,9 @@ async function lobbyTransfer(lobbyID, lobbyData) {
     player2Pfp: lobbyData.player2Pfp || null,
     gameActive: true,
     turn: lobbyData.player1, // Sets first turn to host by default
+    //guessNum
+    player1Guesses: 0,
+    player2Guesses: 0
   });
 
   console.log("Lobby transferred to activeGames:", lobbyID);

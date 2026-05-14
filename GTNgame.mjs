@@ -220,14 +220,18 @@ function turnSwitch(gameData) {
     update(GAMEREF, {
       turn: gameData.player2
     });
+    fb_AddGuess(gameData.player1Guesses);
 
   } else {
     update(GAMEREF, {
       turn: gameData.player1
     });
+    fb_AddGuess(gameData.player2Guesses);
   }
+}
 
-
+function fb_AddGuess(playerWhoGuessed) {
+  playerWhoGuessed++; // Add 1 to the player's guess count
 }
 
 /*******************************************************/
@@ -338,9 +342,11 @@ function displayWins(p1Wins, p2Wins) {
 /*******************************************************/
 // TO DO
 // Turn indicator needs to be improved
+// Display list of guesses for each player to both players
 // Add array with each players guesses to be displayed
 // Game over screen when someone wins with bakc to lobby button
-// Display list of guesses for each player to both players
 // Add 🔥 when guesses are within 10 numbers
-// Add wins from firebase to display
+// If one person wins the other person should see
+
+// Write #guesses to firebase
 /*******************************************************/
