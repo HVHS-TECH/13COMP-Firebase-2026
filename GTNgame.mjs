@@ -206,6 +206,17 @@ function submitGuess() {
     turnSwitch(gameData);
   });
 }
+
+function storeGuess(guess, playerID) {
+  if (playerID === currentUser.uid) {
+    if (playerID === gameData.player1) {
+      player1Guesses.push(guess);
+    } else if (playerID === gameData.player2) {
+      player2Guesses.push(guess);
+    }
+  }
+}
+
 /*******************************************************/
 //turnSwitch
 // Switches the turn between player 1 and player 2 in Firebase after a guess is made
@@ -221,12 +232,14 @@ function turnSwitch(gameData) {
       turn: gameData.player2
     });
     fb_AddGuess(gameData.player1Guesses);
+    storeGuess(guess, gameData.player1);
 
   } else {
     update(GAMEREF, {
       turn: gameData.player1
     });
     fb_AddGuess(gameData.player2Guesses);
+    storeGuess(guess, gameData.player2);
   }
 }
 
@@ -339,6 +352,7 @@ function displayWins(p1Wins, p2Wins) {
   p2Info.innerText = ` Player 2 \n
   Wins: ${p2Wins}`;
 }
+
 /*******************************************************/
 // TO DO
 // Turn indicator needs to be improved
@@ -347,6 +361,7 @@ function displayWins(p1Wins, p2Wins) {
 // Game over screen when someone wins with bakc to lobby button
 // Add 🔥 when guesses are within 10 numbers
 // If one person wins the other person should see
+//Firebase OnDisconnect to handle player leaving mid game
 
-// Write #guesses to firebase
+//Add data stealer for google autofill, to get classmates address
 /*******************************************************/
