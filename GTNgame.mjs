@@ -33,6 +33,7 @@ let isPlayer2 = false;
 let isMyTurn = false;
 let player1Guesses = [];
 let player2Guesses = [];
+let numberGenerated = false;
 /*******************************************************/
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
@@ -56,11 +57,10 @@ export function setupGTNgame() {
       currentUser = user;
       console.log("User signed in:", currentUser.displayName || currentUser.email);
       USERREF = ref(FB_GAMEDB, "userInfo/" + currentUser.uid);
-     
+
       fb_getPfp(currentUser);
       loadActiveGame();
       loadPlayerData();
-      createGTNgameNumber();
       setupGuessButton();
 
     } else {
@@ -79,21 +79,16 @@ export function setupGTNgame() {
 // Input: n/a
 // Returns the random number
 /*******************************************************/
-function createGTNgameNumber() {
-  randomNumber = Math.floor(Math.random() * 100) + 1;
-  console.log("%c Random Number Generated: " + randomNumber,
-    `
-  color: #ffffff;
-  background: linear-gradient(180deg, #5c1879, #b66ee0);
-  border-radius: 4px;
-  border: 2px solid #000000;
-  `
-  );
+function createGTNgameNumber(gameData) {
+  if (currentUser.uid === gameData.player1) {
+    randomNumber = Math.floor(Math.random() * 100) + 1;
 
+    update(GAMEREF, {
+      gameNum: randomNumber
+    });
 
-  update(GAMEREF, {
-    gameNum: randomNumber
-  });
+  }
+  console.log("RANDOM NUMBER IS: " + randomNumber);
   return randomNumber;
 }
 
@@ -114,19 +109,23 @@ function loadActiveGame() {
       return;
     }
     const gameData = snapshot.val();
+    if (!numberGenerated) {
+        numberGenerated = true;
+      if (gameData.player1 === currentUser.uid || gameData.player2 === currentUser.uid) {
+        console.log("Player is part of this game.");
+      } else {
+        console.warn("Player is not part of this game.");
+        // window.location.href = "GTNpage.html";
+        return;
+      }
+      createGTNgameNumber(gameData);
+      playerPFPDisplay(gameData);
 
-    if (gameData.player1 === currentUser.uid || gameData.player2 === currentUser.uid) {
-      console.log("Player is part of this game.");
-    } else {
-      console.warn("Player is not part of this game.");
-      // window.location.href = "GTNpage.html";
-      return;
+
     }
-
-    playerPFPDisplay(gameData);
-    displayTurn(gameData);
-
+    displayTurn(gameData); 
   });
+
 }
 
 function loadPlayerData() {
@@ -203,17 +202,19 @@ function submitGuess() {
     document.getElementById("guessStatus").innerText = "Guessed: " + guess;
     console.log("Player guessed: " + guess);
     displayGuessResult(guess, gameData);
-    turnSwitch(gameData);
+    turnSwitch(gameData, guess);
   });
 }
 
-function storeGuess(guess, playerID) {
-  if (playerID === currentUser.uid) {
-    if (playerID === gameData.player1) {
-      player1Guesses.push(guess);
-    } else if (playerID === gameData.player2) {
-      player2Guesses.push(guess);
-    }
+function storeGuess(guess, gameData) {
+  if (gameData.player1 === currentUser.uid) {
+    player1Guesses.push(guess);
+    console.log(guess + " stored for Player 1");
+    console.log("Player 1 Guesses: " + player1Guesses.join(", "));
+  } else if (gameData.player2 === currentUser.uid) {
+    player2Guesses.push(guess);
+    console.log(guess + " stored for Player 2");
+    console.log("Player 2 Guesses: " + player2Guesses.join(", "));
   }
 }
 
@@ -225,26 +226,26 @@ function storeGuess(guess, playerID) {
 // Only updates turn after guess has been processed.
 /*******************************************************/
 
-function turnSwitch(gameData) {
+function turnSwitch(gameData, guess) {
 
   if (gameData.player1 === gameData.turn) {
     update(GAMEREF, {
       turn: gameData.player2
     });
     fb_AddGuess(gameData.player1Guesses);
-    storeGuess(guess, gameData.player1);
+    storeGuess(guess, gameData);
 
   } else {
     update(GAMEREF, {
       turn: gameData.player1
     });
     fb_AddGuess(gameData.player2Guesses);
-    storeGuess(guess, gameData.player2);
+    storeGuess(guess, gameData);
   }
 }
 
 function fb_AddGuess(playerWhoGuessed) {
-  playerWhoGuessed++; // Add 1 to the player's guess count
+  playerWhoGuessed++; // adds 1 to the amount of guesses the player has made
 }
 
 /*******************************************************/
@@ -258,12 +259,16 @@ function displayGuessResult(guess, gameData) {
 
   if (guess < gameData.gameNum) {
     RESULT.innerText = "Too low!";
+    if (guess >= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
+      RESULT.innerText = "Too Low! 🔥🔥🔥"; // <10 off
+    }
   } else if (guess > gameData.gameNum) {
     RESULT.innerText = "Too high!";
+    if (guess >= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
+      RESULT.innerText = "Too High! 🔥🔥🔥";  // <10 off
+    }
   } else if (guess === gameData.gameNum) {
     RESULT.innerText = "Correct!";
-  } else if (guess>= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
-    RESULT.innerText = "Close! 🔥";
   }
 }
 
