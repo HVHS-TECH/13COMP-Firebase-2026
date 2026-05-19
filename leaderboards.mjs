@@ -84,7 +84,7 @@ function ldrBoard1() {
       if (ldrMenu.classList.contains("hidden")) {
         ldrMenu.classList.remove("hidden");
 
-        const scoresRef = ref(FB_GAMEDB, 'userInfo');
+        const scoresRef = ref(FB_GAMEDB, 'userInfo/' + currentUID);
         const topQuery = query(scoresRef, orderByChild('gnomescore'), limitToLast(5));
 
         onValue(topQuery, (snapshot) => {
@@ -126,9 +126,9 @@ function ldrBoard1() {
 }
 
 /******************************************************/
-// ldrBoard2 (Coin Catcher Scores)
+// ldrBoard2 GTN Lowest Guesses
 // Called by choosegame.html on page load
-// Goes to Coin Catcher Scores leaderboard 
+// Goes to GTN Lowest Guesses leaderboard 
 // Input: 'n/a'
 // Return: n/a
 /******************************************************/
@@ -144,8 +144,8 @@ function ldrBoard2() {
       if (ldrMenu2.classList.contains("hidden")) {
         ldrMenu2.classList.remove("hidden");
 
-        const scoresRef = ref(FB_GAMEDB, 'userInfo');
-        const topQuery = query(scoresRef, orderByChild('coinscore'), limitToLast(5));
+        const scoresRef = ref(FB_GAMEDB, 'userInfo/' + currentUID);
+        const topQuery = query(scoresRef, orderByChild('gtnscore'), limitToLast(5));
 
         onValue(topQuery, (snapshot) => {
           if (!snapshot.exists()) {
@@ -156,21 +156,21 @@ function ldrBoard2() {
           const scores = [];
           const data = snapshot.val();
           snapshot.forEach(child => {
-             console.log("All Coin Catcher scores data:", data);
+             console.log("All GTN Lowest Guesses scores data:", data);
             scores.push(child.val());
           });
 
-          scores.reverse(); // highest score first
+          scores.reverse(); 
           scoreList2.innerHTML = "";
 
           scores.forEach((data, index) => {
             const li = document.createElement("li");
             const medal = medals[index] || "";
-            li.textContent = `${medal} ${data.name}: ${data.coinscore}`;
+            li.textContent = `${medal} ${data.name}: ${data.gtnscore}`;
             if (data.uid === currentUID) {
               li.style.backgroundColor = "var(--antiflash-white)";
               li.style.fontWeight = "bold";
-             } //Colour changing leaderboard from GPT
+             } 
 
 
             if (index === 0 && data.uid == currentUID) {
