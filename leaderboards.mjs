@@ -144,34 +144,42 @@ function ldrBoard2() {
       if (ldrMenu2.classList.contains("hidden")) {
         ldrMenu2.classList.remove("hidden");
 
-        const scoresRef = ref(FB_GAMEDB, 'userInfo/' + currentUID);
-        const topQuery = query(scoresRef, orderByChild('gtnscore'), limitToLast(5));
+        const scoresRef = ref(FB_GAMEDB, 'userInfo/');
+        const topQuery = query(scoresRef, orderByChild('GTNfewestGuesses'), limitToLast(10));
 
         onValue(topQuery, (snapshot) => {
           if (!snapshot.exists()) {
             scoreList2.textContent = "No scores available.";
             return;
           }
-
+          let keys = [];
+          keys.push(Object.keys(snapshot.val()));
+          keys.reverse();
           const scores = [];
           const data = snapshot.val();
           snapshot.forEach(child => {
              console.log("All GTN Lowest Guesses scores data:", data);
+             console.log("Child data:", child.val());
             scores.push(child.val());
           });
 
           scores.reverse(); 
+          console.log("Reversed GTN Lowest Guesses scores:", scores);
           scoreList2.innerHTML = "";
 
           scores.forEach((data, index) => {
+            console.log(`Processing score #${index + 1}:`, data);
             const li = document.createElement("li");
             const medal = medals[index] || "";
-            li.textContent = `${medal} ${data.name}: ${data.gtnscore}`;
+            li.textContent = `${medal} ${data.name}: ${data.GTNfewestGuesses}`;
             if (data.uid === currentUID) {
               li.style.backgroundColor = "var(--antiflash-white)";
               li.style.fontWeight = "bold";
              } 
-
+             for (let i = 1; i < keys[0].length; i++) {
+              console.log(snapshot.val()[keys[0][i]]);
+              console.log(snapshot.val()[keys[0][i]]["GTNfewestGuesses"]);
+             }
 
             if (index === 0 && data.uid == currentUID) {
               li.style.color = "var(--poison-purple)";

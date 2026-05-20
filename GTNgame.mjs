@@ -438,7 +438,7 @@ function saveGameResult(gameData, USERREF) {
     const userData = snapshot.val();
 
     let currentWins = userData.GTNwins || 0;
-    let fewestGuesses = userData.GTNfewestGuesses || null;
+    let fewestGuesses = userData.GTNFewestGuesses || null;
     let guessAmount = 0;
 
     if (gameData.player1 === currentUser.uid) {
@@ -451,7 +451,7 @@ function saveGameResult(gameData, USERREF) {
       update(USERREF, {
         GTNwins: currentWins + 1,
         lastWinGuessCount: guessAmount,
-        GTNfewestGuesses: guessAmount
+        GTNFewestGuesses: guessAmount
       });
     } else {
       update(USERREF, {
