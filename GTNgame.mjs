@@ -130,6 +130,20 @@ function loadActiveGame(USERREF) {
       createGTNgameNumber(gameData);
       playerPFPDisplay(gameData);
 
+      // render the most recent guess for all clients
+      const RESULT = document.getElementById("guessResultDisplay");
+      if (gameData.lastGuess !== undefined && RESULT) {
+        let lastName = "Someone";
+        if (gameData.lastGuesser === currentUser.uid) {
+          lastName = "You";
+        } else if (gameData.lastGuesser === gameData.player1) {
+          lastName = gameData.player1Name || "Player 1";
+        } else if (gameData.lastGuesser === gameData.player2) {
+          lastName = gameData.player2Name || "Player 2";
+        }
+        RESULT.innerText = `Last guess: ${gameData.lastGuess} — ${lastName}`;
+      }
+
       update(GAMEREF, {
         gameState: "playing"
       });
@@ -218,6 +232,16 @@ function submitGuess() {
       return;
     }
 
+    // store last guess info in the game record so all clients can see it
+    update(GAMEREF, {
+      lastGuess: guess,
+      lastGuesser: currentUser.uid
+    });
+
+    // attach to local snapshot so the immediate UI update can use it
+    gameData.lastGuess = guess;
+    gameData.lastGuesser = currentUser.uid;
+
     document.getElementById("guessStatus").innerText = "Guessed: " + guess;
     console.log("Player guessed: " + guess);
     displayGuessResult(guess, gameData);
@@ -294,25 +318,47 @@ function fb_AddGuess(playerWhoGuessed, playerField) {
 function displayGuessResult(guess, gameData) {
   const RESULT = document.getElementById("guessResultDisplay");
 
-  if (guess < gameData.gameNum) {
-    RESULT.innerText = "Too low!";
-    if (guess >= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
-      RESULT.innerText = "Too Low! 🔥🔥🔥"; // <10 off
-    }
-  } else if (guess > gameData.gameNum) {
-    RESULT.innerText = "Too high!";
-    if (guess >= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
-      RESULT.innerText = "Too High! 🔥🔥🔥";  // <10 off
-    }
-  } else if (guess === gameData.gameNum) {
-    RESULT.innerText = "Correct!";
+  let message = "";
+  if (typeof gameData.gameNum === 'number') {
+    if (guess < gameData.gameNum) {
+      message = "Too low!";
+      if (guess >= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
+        message = "Too Low! 🔥🔥🔥";
+      }
+    } else if (guess > gameData.gameNum) {
+      message = "Too high!";
+      if (guess >= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
+        message = "Too High! 🔥🔥🔥";
+      }
+    } else if (guess === gameData.gameNum) {
+      message = "Correct!";
 
-    update(GAMEREF, {
-      gameState: "finished",
-      winner: currentUser.uid,
-      winnerName: currentUser.displayName || "Player"
-    });
+      update(GAMEREF, {
+        gameState: "finished",
+        winner: currentUser.uid,
+        winnerName: currentUser.displayName || "Player"
+      });
+    }
+  } else {
+    message = "Result pending...";
   }
+
+  // Determine last guess and who made it
+  const lastGuess = gameData.lastGuess !== undefined ? gameData.lastGuess : guess;
+  let lastGuesserName = "Someone";
+  if (gameData.lastGuesser) {
+    if (gameData.lastGuesser === currentUser.uid) {
+      lastGuesserName = "You";
+    } else if (gameData.lastGuesser === gameData.player1) {
+      lastGuesserName = gameData.player1Name || "Player 1";
+    } else if (gameData.lastGuesser === gameData.player2) {
+      lastGuesserName = gameData.player2Name || "Player 2";
+    } else {
+      lastGuesserName = gameData.lastGuesser;
+    }
+  }
+
+  RESULT.innerText = message + "\nLast guess: " + lastGuess + " — " + lastGuesserName;
 }
 
 /*******************************************************/

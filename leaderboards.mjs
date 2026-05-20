@@ -145,7 +145,7 @@ function ldrBoard2() {
         ldrMenu2.classList.remove("hidden");
 
         const scoresRef = ref(FB_GAMEDB, 'userInfo/');
-        const topQuery = query(scoresRef, orderByChild('GTNfewestGuesses'), limitToLast(10));
+        const topQuery = query(scoresRef, orderByChild('GTNFewestGuesses'), limitToLast(10));
 
         onValue(topQuery, (snapshot) => {
           if (!snapshot.exists()) {
@@ -171,14 +171,14 @@ function ldrBoard2() {
             console.log(`Processing score #${index + 1}:`, data);
             const li = document.createElement("li");
             const medal = medals[index] || "";
-            li.textContent = `${medal} ${data.name}: ${data.GTNfewestGuesses}`;
+            li.textContent = `${medal} ${data.name}: ${data.GTNFewestGuesses}`;
             if (data.uid === currentUID) {
               li.style.backgroundColor = "var(--antiflash-white)";
               li.style.fontWeight = "bold";
              } 
              for (let i = 1; i < keys[0].length; i++) {
               console.log(snapshot.val()[keys[0][i]]);
-              console.log(snapshot.val()[keys[0][i]]["GTNfewestGuesses"]);
+              console.log(snapshot.val()[keys[0][i]]["GTNFewestGuesses"]);
              }
 
             if (index === 0 && data.uid == currentUID) {
