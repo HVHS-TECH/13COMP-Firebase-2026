@@ -120,14 +120,14 @@ window.menuBtn = menuBtn;
 //Functions from GTNgame.mjs
 //Listeners for creating a lobby and navigating back to menu
 /**************************************************************/
-import { leaveActiveGame} from './GTNgame.mjs';
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("createBtn");
-  if (btn) {
-    btn.addEventListener("click", lobbyCreate);
-  }
-});
-window.menuBtn = menuBtn;
+// import { leaveActiveGame} from './GTNgame.mjs';
+// document.addEventListener("DOMContentLoaded", () => {
+//   const btn = document.getElementById("createBtn");
+//   if (btn) {
+//     btn.addEventListener("click", lobbyCreate);
+//   }
+// });
+// window.menuBtn = menuBtn;
 
 
 /****************************************************/

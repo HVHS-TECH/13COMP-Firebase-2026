@@ -121,7 +121,7 @@ function loadActiveGame(USERREF) {
       return;
     }
 
-    if (CheckGameEnd(gameData, USERREF)) {
+    if (checkGameEnd(gameData, USERREF)) {
       return;
     }
 
@@ -130,7 +130,7 @@ function loadActiveGame(USERREF) {
     playerPFPDisplay(gameData);
     displayTurn(gameData);
     displayLastGuess(gameData);
-    CheckGameEnd(gameData, USERREF)
+    checkGameEnd(gameData, USERREF);
 
     if (!numberGenerated) {
       numberGenerated = true;
@@ -653,13 +653,13 @@ function saveLeaveWin(winnerUID) {
 
 
 /*******************************************************/
-// CheckGameEnd
+// checkGameEnd
 // Checks if the game has finished
 // Saves result only if the win came from a correct guess
 // Displays the game over screen for all finished game types
 // Return: T/F
 /*******************************************************/
-function CheckGameEnd(gameData, USERREF) {
+function checkGameEnd(gameData, USERREF) {
   if (gameData.gameState !== "finished") {
     return false;
   }
@@ -676,8 +676,14 @@ function CheckGameEnd(gameData, USERREF) {
 // TO DO
 // Turn indicator needs to be improved
 // Display list of guesses for each player to both players
-// back to lobby button
 //Firebase OnDisconnect to handle player leaving mid game
+/*On discnnect idea
+* Listen for changes in discon ref
+* if player dcs add player uid to discon ref
+* add other player to winnerUID
+* run leave win functions
+*/
+
 
 //Add data stealer for google autofill, to get classmates address
 /*******************************************************/
