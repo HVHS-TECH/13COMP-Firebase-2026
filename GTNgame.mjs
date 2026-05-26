@@ -61,6 +61,8 @@ export function setupGTNgame() {
       fb_getPfp(currentUser);
       loadActiveGame(USERREF);
       setupGuessButton();
+      setupLeaveButton();
+      console.log(gameID);
 
     } else {
       console.warn("No user signed in.");
@@ -99,80 +101,47 @@ function createGTNgameNumber(gameData) {
 // Input: n/a
 // Return n/a
 /*******************************************************/
+/**********************************************************/
+// loadActiveGame
+// Loads the active game data from Firebase and updates the game UI
+// Runs live UI updates every time Firebase changes
+// Runs number generation only once
+/*******************************************************/
 function loadActiveGame(USERREF) {
-
   onValue(GAMEREF, (snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Active game no longer exists.");
-      // window.location.href = "GTNpage.html";
       return;
     }
+
     const gameData = snapshot.val();
-    displayCrown(gameData);
 
-    if (gameData.gameState === "finished") {
-      if (gameData.winner === currentUser.uid && !gameData.resultSaved) {
-        saveGameResult(gameData, USERREF);
-      }
-
-      displayGameOver(gameData);
+    if (gameData.player1 !== currentUser.uid && gameData.player2 !== currentUser.uid) {
+      console.warn("Player is not part of this game.");
       return;
     }
+
+    if (CheckGameEnd(gameData, USERREF)) {
+      return;
+    }
+
+
+    displayCrown(gameData);
+    playerPFPDisplay(gameData);
+    displayTurn(gameData);
+    displayLastGuess(gameData);
+    CheckGameEnd(gameData, USERREF)
+
     if (!numberGenerated) {
       numberGenerated = true;
-      if (gameData.player1 === currentUser.uid || gameData.player2 === currentUser.uid) {
-        console.log("Player is part of this game.");
-      } else {
-        console.warn("Player is not part of this game.");
-        // window.location.href = "GTNpage.html";
-        return;
-      }
       createGTNgameNumber(gameData);
-      playerPFPDisplay(gameData);
-
-      // render the most recent guess for all clients
-      const RESULT = document.getElementById("guessResultDisplay");
-      if (gameData.lastGuess !== undefined && RESULT) {
-        let lastName = "Someone";
-        if (gameData.lastGuesser === currentUser.uid) {
-          lastName = "You";
-        } else if (gameData.lastGuesser === gameData.player1) {
-          lastName = gameData.player1Name || "Player 1";
-        } else if (gameData.lastGuesser === gameData.player2) {
-          lastName = gameData.player2Name || "Player 2";
-        }
-        RESULT.innerText = `Last guess: ${gameData.lastGuess} — ${lastName}`;
-      }
 
       update(GAMEREF, {
         gameState: "playing"
       });
-
-
     }
-    displayTurn(gameData);
   });
-
 }
-/*******************************************************/
-// loadPlayerData
-// Loads player data from Firebase for the current GTN match
-// Checks if the active game still exists before displaying crowns
-// Calls displayCrown() using the user data
-// Input: USERREF (Firebase reference)
-// Return: n/a
-/*******************************************************/
-// function loadPlayerData() {
-//   get(USERREF).then((snapshot) => {
-//     if (!snapshot.exists()) {
-//       console.warn("Active game no longer exists.");
-//       // window.location.href = "GTNpage.html";
-//       return;
-//     }
-//     const userData = snapshot.val();
-
-//   });
-// }
 /**********************************************************/
 //playerPFPDisplay
 // Displays player profile pictures and names in the game lobby
@@ -194,6 +163,32 @@ function playerPFPDisplay(gameData) {
   if (p2Name) p2Name.innerText = gameData.player2Name || "Player 2";
 }
 
+/*******************************************************/
+// displayLastGuess
+// Displays the most recent guess and who made it
+// Called by loadActiveGame()
+// Input: gameData
+// Return: n/a
+/*******************************************************/
+function displayLastGuess(gameData) {
+  const RESULT = document.getElementById("guessResultDisplay");
+
+  if (!RESULT || gameData.lastGuess === undefined) {
+    return;
+  }
+
+  let lastName = "Someone";
+
+  if (gameData.lastGuesser === currentUser.uid) {
+    lastName = "You";
+  } else if (gameData.lastGuesser === gameData.player1) {
+    lastName = gameData.player1Name || "Player 1";
+  } else if (gameData.lastGuesser === gameData.player2) {
+    lastName = gameData.player2Name || "Player 2";
+  }
+
+  RESULT.innerText = `Last guess: ${gameData.lastGuess} — ${lastName}`;
+}
 /*******************************************************/
 // setupGuessButton
 // attaches click event to guess button
@@ -336,7 +331,8 @@ function displayGuessResult(guess, gameData) {
       update(GAMEREF, {
         gameState: "finished",
         winner: currentUser.uid,
-        winnerName: currentUser.displayName || "Player"
+        winnerName: currentUser.displayName || "Player",
+        winType: "guess"
       });
     }
   } else {
@@ -492,19 +488,12 @@ function saveGameResult(gameData, USERREF) {
     } else if (gameData.player2 === currentUser.uid) {
       guessAmount = gameData.player2Guesses;
     }
+    update(USERREF, {
+      GTNwins: currentWins + 1,
+      lastWinGuessCount: guessAmount
+    });
 
-    if (fewestGuesses === null || guessAmount < fewestGuesses) {
-      update(USERREF, {
-        GTNwins: currentWins + 1,
-        lastWinGuessCount: guessAmount,
-        GTNFewestGuesses: guessAmount
-      });
-    } else {
-      update(USERREF, {
-        GTNwins: currentWins + 1,
-        lastWinGuessCount: guessAmount
-      });
-    }
+    updateFewestGuesses(userData, USERREF, guessAmount);
 
     update(GAMEREF, {
       resultSaved: true
@@ -515,13 +504,179 @@ function saveGameResult(gameData, USERREF) {
 }
 
 /*******************************************************/
+// updateFewestGuesses
+// Checks if the current win used fewer guesses than the user's saved best
+// Updates GTNFewestGuesses only if the new guess amount is lower
+// Input: userData, USERREF, guessAmount
+// Return: n/a
+/*******************************************************/
+function updateFewestGuesses(userData, USERREF, guessAmount) {
+  const fewestGuesses = userData.GTNFewestGuesses || null;
+
+  if (fewestGuesses === null || guessAmount < fewestGuesses) {
+    update(USERREF, {
+      GTNFewestGuesses: guessAmount
+    });
+
+    console.log("New fewest guesses saved:", guessAmount);
+  }
+}
+
+/*******************************************************/
+// setupLeaveButton
+// Attaches click event to the leave button
+// Calls leaveActiveGame when the player chooses to leave
+/*******************************************************/
+function setupLeaveButton() {
+  const leaveBtn = document.getElementById("leaveBtn");
+
+  if (!leaveBtn) {
+    console.warn("leaveBtn not found in HTML.");
+    return;
+  }
+
+  leaveBtn.addEventListener("click", leaveActiveGame);
+}
+
+/*******************************************************/
+// leaveActiveGame
+// Handles a player leaving an active GTN game
+// Prevents duplicate wins if the game has already ended
+// Awards the win to the remaining player and updates Firebase
+// Return: N/A
+/*******************************************************/
+function leaveActiveGame() {
+
+
+  get(GAMEREF).then((snapshot) => {
+    if (!snapshot.exists()) {
+      console.warn("Game does not exist.");
+      return;
+    }
+
+    const gameData = snapshot.val();
+
+    if (gameData.gameState === "finished") {
+      console.log("Game already finished. Leave button will not award another win.");
+      window.location.href = "GTNpage.html";
+      return;
+    }
+
+    let winner;
+    let winnerName;
+
+    if (currentUser.uid === gameData.player1) {
+      winner = gameData.player2;
+      winnerName = gameData.player2Name || "Player 2";
+    } else if (currentUser.uid === gameData.player2) {
+      winner = gameData.player1;
+      winnerName = gameData.player1Name || "Player 1";
+    } else {
+      console.warn("Current user is not part of this game.");
+      return;
+    }
+
+
+    saveLeaveWin(winner);
+
+    update(GAMEREF, {
+      gameState: "finished",
+      winner: winner,
+      winnerName: winnerName,
+      winType: "leave",
+      resultSaved: true
+    }).then(() => {
+      console.log("Player left the game. Winner declared: " + winnerName);
+      window.location.href = "GTNpage.html";
+    });
+
+
+  });
+}
+
+/*******************************************************/
+// logPlayerWins
+// Reads and logs both players' GTN win counts
+// Input: gameData
+// Return: n/a
+/*******************************************************/
+function logPlayerWins(gameData) {
+  const p1Ref = ref(FB_GAMEDB, "userInfo/" + gameData.player1 + "/GTNwins");
+  const p2Ref = ref(FB_GAMEDB, "userInfo/" + gameData.player2 + "/GTNwins");
+
+  get(p1Ref).then((p1Snap) => {
+    let p1Wins = 0;
+
+    if (p1Snap.exists()) {
+      p1Wins = p1Snap.val();
+    }
+
+    get(p2Ref).then((p2Snap) => {
+      let p2Wins = 0;
+
+      if (p2Snap.exists()) {
+        p2Wins = p2Snap.val();
+      }
+
+      console.log("Player 1 wins: " + p1Wins);
+      console.log("Player 2 wins: " + p2Wins);
+    });
+  });
+}
+
+/*******************************************************/
+// saveLeaveWin
+// Adds one GTN win to the player who won because the other player left
+// Does not update guess count or fewest guesses
+// Input: winnerUID
+// Return: n/a
+/*******************************************************/
+function saveLeaveWin(winnerUID) {
+  const WINNERREF = ref(FB_GAMEDB, "userInfo/" + winnerUID);
+
+  get(WINNERREF).then((snapshot) => {
+    if (!snapshot.exists()) {
+      console.warn("Winner data not found.");
+      return;
+    }
+
+    const userData = snapshot.val();
+    const currentWins = userData.GTNwins || 0;
+
+    update(WINNERREF, {
+      GTNwins: currentWins + 1,
+    });
+
+    console.log("Leave win saved.");
+  });
+}
+
+
+/*******************************************************/
+// CheckGameEnd
+// Checks if the game has finished
+// Saves result only if the win came from a correct guess
+// Displays the game over screen for all finished game types
+// Return: T/F
+/*******************************************************/
+function CheckGameEnd(gameData, USERREF) {
+  if (gameData.gameState !== "finished") {
+    return false;
+  }
+
+  if (gameData.winType === "guess" && gameData.winner === currentUser.uid && !gameData.resultSaved) {
+    saveGameResult(gameData, USERREF);
+  }
+  logPlayerWins(gameData);
+  displayGameOver(gameData);
+  return true;
+}
+
+/*******************************************************/
 // TO DO
 // Turn indicator needs to be improved
 // Display list of guesses for each player to both players
-// Add array with each players guesses to be displayed
-// Game over screen when someone wins with bakc to lobby button
-// Add 🔥 when guesses are within 10 numbers
-// If one person wins the other person should see
+// back to lobby button
 //Firebase OnDisconnect to handle player leaving mid game
 
 //Add data stealer for google autofill, to get classmates address

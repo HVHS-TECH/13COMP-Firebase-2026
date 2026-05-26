@@ -152,9 +152,6 @@ function ldrBoard2() {
             scoreList2.textContent = "No scores available.";
             return;
           }
-          let keys = [];
-          keys.push(Object.keys(snapshot.val()));
-          keys.reverse();
           const scores = [];
           const data = snapshot.val();
           snapshot.forEach(child => {
@@ -176,10 +173,6 @@ function ldrBoard2() {
               li.style.backgroundColor = "var(--antiflash-white)";
               li.style.fontWeight = "bold";
              } 
-             for (let i = 1; i < keys[0].length; i++) {
-              console.log(snapshot.val()[keys[0][i]]);
-              console.log(snapshot.val()[keys[0][i]]["GTNFewestGuesses"]);
-             }
 
             if (index === 0 && data.uid == currentUID) {
               li.style.color = "var(--poison-purple)";
