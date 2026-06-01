@@ -4,10 +4,10 @@ console.log(
 );
 /**************************************************************/
 // Essential Firebase Imports
-import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
+import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from '../firebase/fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue, get, set, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { fb_checkUser } from './fb_core.mjs';
+import { fb_checkUser } from '../firebase/fb_core.mjs';
 //****************************************************************/
 //Export functions to /main.mjs
 export {
