@@ -39,7 +39,7 @@ let numberGenerated = false;
 /*******************************************************/
 
 import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
-import { ref, query, orderByChild, limitToLast, onValue, get, set, remove, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { ref, query, orderByChild, limitToLast, onValue, get, set, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 /**********************************************************/
 //setupGTNgame
@@ -62,7 +62,11 @@ export function setupGTNgame() {
       loadActiveGame(USERREF);
       setupGuessButton();
       setupLeaveButton();
-      console.log(gameID);
+      console.log("GAME ID: " + gameID);
+
+      // onDisconnect handling functions
+      onDisconHandler();
+      onDisconListener();
 
     } else {
       console.warn("No user signed in.");
@@ -100,12 +104,6 @@ function createGTNgameNumber(gameData) {
 // Calls playerPFPDisplay() to show player profile pictures and names
 // Input: n/a
 // Return n/a
-/*******************************************************/
-/**********************************************************/
-// loadActiveGame
-// Loads the active game data from Firebase and updates the game UI
-// Runs live UI updates every time Firebase changes
-// Runs number generation only once
 /*******************************************************/
 function loadActiveGame(USERREF) {
   onValue(GAMEREF, (snapshot) => {
@@ -339,8 +337,12 @@ function displayGuessResult(guess, gameData) {
     message = "Result pending...";
   }
 
-  // Determine last guess and who made it
-  const lastGuess = gameData.lastGuess !== undefined ? gameData.lastGuess : guess;
+}
+
+function displayLastGuess(guess, gameData) {
+  const LGUESSFIELD = document.getElementById("otherGuessDisplay");
+  // const lastGuess = gameData.lastGuess !== undefined ? gameData.lastGuess : guess;
+
   let lastGuesserName = "Someone";
   if (gameData.lastGuesser) {
     if (gameData.lastGuesser === currentUser.uid) {
@@ -354,7 +356,7 @@ function displayGuessResult(guess, gameData) {
     }
   }
 
-  RESULT.innerText = message + "\nLast guess: " + lastGuess + " — " + lastGuesserName;
+  LGUESSFIELD.innerText = "Last guess: " + lastGuess + "-" + lastGuesserName;
 }
 
 /*******************************************************/
@@ -673,17 +675,130 @@ function checkGameEnd(gameData, USERREF) {
 }
 
 /*******************************************************/
+// onDisconHandler
+// Sets up Firebase onDisconnect for the current player.
+// If this player loses connection, their UID is written to the game.
+// This does not give the win by itself.
+/*******************************************************/
+function onDisconHandler() {
+  if (!currentUser || !gameID) {
+    console.warn("Cannot setup disconnect handler. Missing user or gameID.");
+    return;
+  }
+
+  const DISCONREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID + "/disconnectedUser");
+
+  onDisconnect(DISCONREF).set(currentUser.uid);
+  console.log("discon handler set");
+}
+
+/*******************************************************/
+// getDisconWinner
+// Finds the winner by checking which player did not disconnect.
+// Input: gameData
+// Return: winner UID, or null if data is invalid
+/*******************************************************/
+function getDisconWinner(gameData) {
+  const disconUID = gameData.disconnectedUser;
+
+  if (!disconUID) {
+    return null;
+  }
+  if (disconUID === gameData.player1) {
+    return gameData.player2;
+  }
+  if (disconUID === gameData.player2) {
+    return gameData.player1;
+  }
+
+  console.warn("Disconnected UID does not match either player.");
+  return null;
+}
+
+/*******************************************************/
+// OnDisconListener
+// Listens for changes to the disconnectedUser field in Firebase.
+// If a player disconnects, determines the winner and updates the game state.
+/*******************************************************/
+function onDisconListener() {
+  onValue(GAMEREF, (snapshot) => {
+    if (!snapshot.exists()) {
+      console.warn("Game no longer exists.");
+      return;
+    }
+
+    const gameData = snapshot.val();
+
+    if (!gameData.disconnectedUser) {
+      return;
+    }
+
+    if (gameData.winner) {
+      return;
+    }
+
+    const winnerUID = getDisconWinner(gameData);
+
+    if (!winnerUID) {
+      return;
+    }
+
+    if (currentUser.uid !== winnerUID) {
+      console.log("This user is not the winner, so they will not save the win.");
+      return;
+    }
+    handleDisconnectWin(winnerUID, gameData);
+  });
+}
+
+/*******************************************************/
+// handleDisconnectWin
+// Handles awarding a win to the remaining player after a disconnect.
+// Updates Firebase with the winner and saves the leave win.
+// Input: winnerUID, gameData
+// Return: n/a
+/*******************************************************/
+function handleDisconnectWin(winnerUID, gameData) {
+  const winnerName = getDisconWinnerName(gameData, winnerUID);
+
+  update(GAMEREF, {
+    winner: winnerUID,
+    winnerName: winnerName,
+    gameState: "finished",
+    winType: "leave",
+    resultSaved: true
+  })
+    .then(() => {
+      console.log("Leave/disconnect win saved for:", winnerUID);
+      saveLeaveWin(winnerUID);
+    })
+    .catch((error) => {
+      console.error("Error handling disconnect win:", error);
+    });
+}
+
+/*******************************************************/
+// getDisconWinnerName
+// Retrieves the display name of the winner based on their UID
+// Called by handleDisconnectWin to display winner name in the game over info
+// Input: gameData, winnerUID
+// Return: the winner's display name, or a default p1/p2
+/*******************************************************/
+function getDisconWinnerName(gameData, winnerUID) {
+  if (winnerUID === gameData.player1) {
+    return gameData.player1Name || "Player 1";
+  }
+  if (winnerUID === gameData.player2) {
+    return gameData.player2Name || "Player 2";
+  }
+}
+
+/*******************************************************/
 // TO DO
 // Turn indicator needs to be improved
 // Display list of guesses for each player to both players
-//Firebase OnDisconnect to handle player leaving mid game
-/*On discnnect idea
-* Listen for changes in discon ref
-* if player dcs add player uid to discon ref
-* add other player to winnerUID
-* run leave win functions
-*/
 
 
+// OPTIONAL: Add a chat feature for players to talk during the game
 //Add data stealer for google autofill, to get classmates address
 /*******************************************************/
