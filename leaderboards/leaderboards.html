@@ -5,26 +5,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Database Project</title>
-  <link rel="stylesheet" href="css/ldrBoard.css" />
+  <link rel="stylesheet" href="../css/ldrBoard.css" />
 </head>
 
 <!--***************************************************
   BODY
 ****************************************************-->
-<body>
-<nav class="pages">
-  <div class="pagesLeft">
-    <div class="page"><a href="choosegame.html">Games</a></div>
-    <div class="page" id="Current">Leaderboards</div>
-    <div class="page"><a href="admin.html">ADMIN LOGIN</a></div>
-  </div>
 
-  <div class="pagesProfile">
-    <img id="pfp" class="pfp" src="images/defaultpfp.png" alt="Profile Picture" />
-  </div>
-</nav>
-    
-    <div class="column">
+<body>
+  <nav class="pages">
+    <div class="pagesLeft">
+      <a href="../choosegame/choosegame.html">Games</a>
+      <div class="page" id="Current">Leaderboards</div>
+      <div class="page"><a href="../admin/admin.html">ADMIN LOGIN</a></div>
+    </div>
+
+    <div class="pagesProfile">
+      <img id="pfp" class="pfp" src="../images/defaultpfp.png" alt="Profile Picture" />
+    </div>
+  </nav>
+
+  <div class="column">
     <h1>LEADERBOARDS</h1>
 
     <button id="ldrBtn">Gnome Top Scores</button>
@@ -39,10 +40,10 @@
       <ul id="scoreList2"></ul>
     </div>
   </div>
-</div>
-<script type="module" src="./main.mjs"></script>
-<script type="module">
-    import { setupLdrBoardPage} from './leaderboards.mjs';
+  </div>
+  <script type="module" src="../firebase/main.mjs"></script>
+  <script type="module">
+    import { setupLdrBoardPage } from './leaderboards.mjs';
     setupLdrBoardPage(); </script>
- <p>Made with p5.play and Google Firebase</p>
+  <p>Made with p5.play and Google Firebase</p>
 </body>

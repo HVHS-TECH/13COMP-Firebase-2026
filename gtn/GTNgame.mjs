@@ -38,8 +38,8 @@ let numberGenerated = false;
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
 
-import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
-import { ref, query, orderByChild, limitToLast, onValue, get, set, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from '../firebase/fb_core.mjs';
+import { ref, query, orderByChild, limitToLast, onValue, get, set, remove, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 /**********************************************************/
 //setupGTNgame
@@ -70,7 +70,7 @@ export function setupGTNgame() {
 
     } else {
       console.warn("No user signed in.");
-      // window.location.href = "index.html";
+      // window.location.href = "../registration/index.html";
     }
   });
 
@@ -109,6 +109,7 @@ function loadActiveGame(USERREF) {
   onValue(GAMEREF, (snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Active game no longer exists.");
+      // window.location.href = "./GTNpage.html";
       return;
     }
 
@@ -132,6 +133,13 @@ function loadActiveGame(USERREF) {
 
     if (!numberGenerated) {
       numberGenerated = true;
+      if (gameData.player1 === currentUser.uid || gameData.player2 === currentUser.uid) {
+        console.log("Player is part of this game.");
+      } else {
+        console.warn("Player is not part of this game.");
+        // window.location.href = "./GTNpage.html";
+        return;
+      }
       createGTNgameNumber(gameData);
 
       update(GAMEREF, {
@@ -140,6 +148,24 @@ function loadActiveGame(USERREF) {
     }
   });
 }
+/*******************************************************/
+// loadPlayerData
+// Loads player data from Firebase for the current GTN match
+// Checks if the active game still exists before displaying crowns
+// Calls displayCrown() using the user data
+// Input: USERREF (Firebase reference)
+// Return: n/a
+/*******************************************************/
+// function loadPlayerData() {
+//   get(USERREF).then((snapshot) => {
+//     if (!snapshot.exists()) {
+//       console.warn("Active game no longer exists.");
+//       // window.location.href = "./GTNpage.html";
+//       return;
+//     }
+//     const userData = snapshot.val();
+
+//   })
 /**********************************************************/
 //playerPFPDisplay
 // Displays player profile pictures and names in the game lobby
@@ -154,8 +180,8 @@ function playerPFPDisplay(gameData) {
   const p1Name = document.getElementById("player1Name");
   const p2Name = document.getElementById("player2Name");
 
-  if (p1Pfp) p1Pfp.src = gameData.player1Pfp || "images/defaultpfp.png";
-  if (p2Pfp) p2Pfp.src = gameData.player2Pfp || "images/defaultpfp.png";
+  if (p1Pfp) p1Pfp.src = gameData.player1Pfp || "../images/defaultpfp.png";
+  if (p2Pfp) p2Pfp.src = gameData.player2Pfp || "../images/defaultpfp.png";
 
   if (p1Name) p1Name.innerText = gameData.player1Name || "Player 1";
   if (p2Name) p2Name.innerText = gameData.player2Name || "Player 2";
@@ -368,9 +394,9 @@ function displayTurn(gameData) {
   const pfpTurn = document.querySelector(".pfpTurn");
 
   if (gameData.turn === gameData.player1) {
-    pfpTurn.src = gameData.player1Pfp;
+    pfpTurn.src = gameData.player1Pfp || "../images/defaultpfp.png";
   } else {
-    pfpTurn.src = gameData.player2Pfp;
+    pfpTurn.src = gameData.player2Pfp || "../images/defaultpfp.png";
   }
 
   pfpTurn.classList.remove("yourTurn");
@@ -560,7 +586,7 @@ function leaveActiveGame() {
 
     if (gameData.gameState === "finished") {
       console.log("Game already finished. Leave button will not award another win.");
-      window.location.href = "GTNpage.html";
+      window.location.href = "./GTNpage.html";
       return;
     }
 
@@ -589,7 +615,7 @@ function leaveActiveGame() {
       resultSaved: true
     }).then(() => {
       console.log("Player left the game. Winner declared: " + winnerName);
-      window.location.href = "GTNpage.html";
+      window.location.href = "./GTNpage.html";
     });
 
 

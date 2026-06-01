@@ -21,7 +21,7 @@ let redirected = false;
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
 
-import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
+import { FB_GAMEDB, FB_AUTH, fb_getPfp } from '../firebase/fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue, get, set, remove, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 /**********************************************************/
@@ -41,7 +41,7 @@ export function setupGTN() {
       console.log("User signed in:", currentUser.displayName || currentUser.email);
     } else {
       console.warn("No user signed in.");
-      window.location.href = "index.html";
+      window.location.href = "../registration/index.html";
     }
   });
   fb_getPfp(currentUser);
@@ -110,7 +110,7 @@ export function lobbyCreate() {
   if (!currentUser) {
     console.error("No user found, please log in.");
     p_lobbyStatus.innerText = "Error: No user found. Please log in.";
-    window.location.href = "index.html";
+    window.location.href = "../registration/index.html";
     return;
   }
   const RECORDPATH = "GTN/lobbies/" + generateLobbyID(currentUser);
@@ -269,7 +269,7 @@ async function lobbyJoin(lobbyID, Btn) {
   try {
     if (!currentUser) {
       console.warn("No user found, please log in.");
-      window.location.href = "index.html";
+      window.location.href = "../registration/index.html";
       return false;
     }
     const LOBBBYREF = "GTN/lobbies/" + lobbyID;
@@ -506,18 +506,18 @@ function lobbyPfpHandler(LOBBIES) {
       found = true;
 
       if (p1) {
-        p1.src = lobbyData.player1Pfp || "images/defaultpfp.png";
+        p1.src = lobbyData.player1Pfp || "../images/defaultpfp.png";
       }
 
       if (p2) {
-        p2.src = lobbyData.player2Pfp || "images/defaultpfp.png";
+        p2.src = lobbyData.player2Pfp || "../images/defaultpfp.png";
       }
     }
   });
 
   if (!found) {
-    if (p1) p1.src = "images/defaultpfp.png";
-    if (p2) p2.src = "images/defaultpfp.png";
+    if (p1) p1.src = "../images/defaultpfp.png";
+    if (p2) p2.src = "../images/defaultpfp.png";
   }
 }
 /*******************************************************/
@@ -543,7 +543,7 @@ function lobbyStartGameCheck(LOBBIES) {
       const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
       remove(LOBBYREF);
       localStorage.setItem("GTNgameID", lobbyID);
-      window.location.href = "GTNgame.html";
+      window.location.href = "./GTNgame.html";
     }
   });
 }
@@ -634,7 +634,7 @@ export function menuBtn() {
       message.style.display = "none";
     }, 5000);
   } else {
-    window.location.href = "choosegame.html";
+   window.location.href = "../choosegame/choosegame.html";
   }
 }
 

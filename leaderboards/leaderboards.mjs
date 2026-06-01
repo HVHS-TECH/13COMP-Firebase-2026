@@ -10,7 +10,7 @@ console.log(
 );
 /**************************************************************/
 // Essential Firebase Imports
-import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
+import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from '../firebase/fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 let username = localStorage.getItem("username");
@@ -39,7 +39,7 @@ export {
     onAuthStateChanged(FB_AUTH, (user) => {
       if (!user) {
         console.warn("No user logged in. Redirecting...");
-        window.location.href = "index.html";
+        window.location.href = "../registration/index.html";
         return;
       }
 
@@ -84,7 +84,7 @@ function ldrBoard1() {
       if (ldrMenu.classList.contains("hidden")) {
         ldrMenu.classList.remove("hidden");
 
-        const scoresRef = ref(FB_GAMEDB, 'userInfo/' + currentUID);
+        const scoresRef = ref(FB_GAMEDB, 'userInfo');
         const topQuery = query(scoresRef, orderByChild('gnomescore'), limitToLast(5));
 
         onValue(topQuery, (snapshot) => {
@@ -199,3 +199,9 @@ window.addEventListener("DOMContentLoaded", () => {
   if (btn1) btn1.addEventListener("click", ldrBoard1);
   if (btn2) btn2.addEventListener("click", ldrBoard2);
 });
+
+/********************************************************************
+ * TODO
+ * - Win Leaderboard
+ *
+ **********************************************************************/

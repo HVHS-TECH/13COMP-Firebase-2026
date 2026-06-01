@@ -97,7 +97,7 @@ function writeUserInfo() {
       document.getElementById("statusMessage").innerText =
         "Data written to " + RECORDPATH;
 
-      window.location.href = "choosegame.html";
+      window.location.href = "../choosegame/choosegame.html";
     })
     .catch((error) => {
       console.error("Error writing data:", error);
@@ -142,33 +142,31 @@ function validateInput(RAWNAME, AGE, PHONENUMBER) {
 // Return: n/a
 /******************************************************/
 function adminPage() {
-  userLogin()
-    .then(() => {
-      const AUTH = getAuth();
-      const DB = getDatabase();
-      const user = AUTH.currentUser;
+  const user = FB_AUTH.currentUser;
 
-      if (user) {
-        const uid = user.uid;
-        const recordPath = "admins/" + uid;
-        const DATAREF = ref(DB, recordPath);
+  if (!user) {
+    alert("Please log in first.");
+    return;
+  }
 
-        return get(DATAREF).then((snapshot) => {
-          if (snapshot.exists()) {
-            console.log("Taking you to the Admin Page");
-            window.location.href = "admin.html";
-          } else {
-            alert("You are not authorised to view this page");
-            const button = document.getElementById("adminButton");
-            if (button) button.style.backgroundColor = "red";
-          }
-        });
+  const uid = user.uid;
+  const recordPath = "admins/" + uid;
+  const DATAREF = ref(FB_GAMEDB, recordPath);
+
+  get(DATAREF)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log("Taking you to the Admin Page");
+        window.location.href = "../admin/admin.html";
       } else {
-        throw new Error("User not logged in after userLogin()");
+        alert("You are not authorised to view this page");
+
+        const button = document.getElementById("adminButton");
+        if (button) button.style.backgroundColor = "red";
       }
     })
     .catch((error) => {
-      console.error(error);
+      console.error("Error checking admin access:", error);
     });
 }
 /******************************************************/
