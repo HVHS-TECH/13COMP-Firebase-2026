@@ -22,7 +22,7 @@ window.draw = draw;
 window.preload = preload;
 window.keyPressed = keyPressed;
 
-import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
+import { FB_GAMEDB, FB_AUTH, fb_getPfp } from '../firebase/fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 export let currentUser = null; // will hold the authenticated user object
@@ -39,7 +39,7 @@ onAuthStateChanged(auth, (user) => {
     console.log("User signed in:", user.displayName || user.email);
   } else {
     console.warn("No user signed in.");
-    window.location.href = "index.html";
+    window.location.href = "../registration/index.html";
   }
 });
 fb_getPfp();
@@ -70,9 +70,9 @@ let confirmState = false;
 // ************************************************************
 // Preload assets
 function preload() {
-  imgPlayer = loadImage('images/stickmangame.png');
-  imgGnome = loadImage('images/gnome.png');
-  imgBG = loadImage('images/Grassbg.jpg');
+  imgPlayer = loadImage('../images/stickmangame.png');
+  imgGnome = loadImage('../images/gnome.png');
+  imgBG = loadImage('../images/Grassbg.jpg');
 }
 
 function setup() {
@@ -331,7 +331,7 @@ export function menuBtn() {
       message.style.display = "none";
     }, 5000);
   } else {
-    window.location.href = "choosegame.html";
+    window.location.href = "../choosegame/choosegame.html";
   }
 };
 /******************************************************/

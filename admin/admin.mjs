@@ -12,7 +12,7 @@ console.log(
 );
 /**************************************************************/
 // Essential Firebase Imports
-import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from './fb_core.mjs';
+import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from '../firebase/fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue, get} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
@@ -44,7 +44,7 @@ export function setupAdmin() {
     onAuthStateChanged(FB_AUTH, (user) => {
       if (!user) {
         console.warn("No user logged in. Redirecting...");
-        window.location.href = "index.html";
+        window.location.href = "../index.html";
         return;
       }
 
@@ -154,7 +154,7 @@ function fb_buildTreeView(obj) {
 /******************************************************/
 // fb_deleteAll
 // Deletes all records on DB
-// Called via button on admin.htxml
+// Called via button on admin.html
 // Input: n/a
 // Return: n/a
 /******************************************************/
@@ -173,9 +173,7 @@ function fb_deleteAll() {
     return; // Exit early
   }
   const RECORDPATH = "/";
-  const data = {
-    NOTHING
-  };
+  const data = {  };
   const DATAREF = ref(FB_GAMEDB, RECORDPATH); // Create the reference
 
   set(DATAREF, data)
@@ -196,7 +194,7 @@ function fb_deleteAll() {
   const auth = FB_AUTH;
   signOut(auth).then(() => {
     console.log("✅ User signed out.");
-    window.location.href = "index.html"; // or redirect somewhere else
+    window.location.href = "../registration/index.html";
   }).catch((error) => {
     console.error("❌ Sign out error:", error);
   });

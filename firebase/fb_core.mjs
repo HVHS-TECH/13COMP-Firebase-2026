@@ -9,18 +9,13 @@ console.log(
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { query, orderByChild, limitToFirst, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+import {getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+import {ref, get} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
 import { sleep } from "./main.mjs";
-import { initChooseGame } from "./choosegame.mjs";
-import { loginHandler } from "./registration.mjs";
-
-
+import { loginHandler } from "../registration/registration.mjs";
 
 //**************************************************************/
 // Firebase Configuration
@@ -101,7 +96,7 @@ async function fb_userLogin() {
         console.log("User already logged in:", user.email);
         document.getElementById('userinfotext').innerText =
           "Already logged in as: " + (user.displayName || "Unknown User");
-        window.location.href = "choosegame.html";
+        window.location.href = "../choosegame/choosegame.html";
         console.log("Redirecting to choosegame.html...");
       } else {
         console.log("User data invalid or incomplete. Cannot redirect.");
@@ -120,14 +115,11 @@ async function fb_userLogin() {
 
         signInWithPopup(AUTH, PROVIDER)
             .then((result) => {
-                const currentUser = result.user;
+                currentUser = result.user;
                 console.log("User signed in:", currentUser.displayName, currentUser.email, currentUser.uid, currentUser.photoURL);
             
-                // Update DOM
                 document.getElementById('userinfotext').innerText =
                 currentUser.displayName || "Unknown User";
-                //Call loginHandler in registration.mjs to write user.uid to firebase.
-                
                 console.info("Calling loginHandler with currentUser:", currentUser.uid);
                 loginHandler(currentUser);
 
@@ -155,7 +147,7 @@ function fb_checkUser() {
             console.log("User is still logged in:", user.email);
             if (window.location.href.includes("index.html")) {  
                 console.log("Redirecting to choosegame.html...");
-                window.location.href = "choosegame.html";
+                window.location.href = "../choosegame/choosegame.html";
             }
         } else {
             console.log("No user logged in, redirecting to login..."); // Redirect to login page
@@ -194,7 +186,7 @@ export async function fb_checkInfo() {
         "%cRequired info filled out. Redirecting to choosegame.html...",
         "color: white; background: green; font-weight: bold; padding: 4px 8px; border-radius: 4px;"
       );
-      window.location.href = "choosegame.html";
+      window.location.href = "../choosegame/choosegame.html";
       await sleep(1000); 
 
       return true; // valid

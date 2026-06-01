@@ -13,7 +13,7 @@ console.log(
 //Functions from registration.mjs
 //Functions for user registration, and admin verification
 /**************************************************************/
-import { writeUserInfo, adminPage, loginHandler, } from './registration.mjs';
+import { writeUserInfo, adminPage, loginHandler } from '../registration/registration.mjs';
 
 window.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("submitBtn");
@@ -30,7 +30,7 @@ window.loginHandler = loginHandler;
 //Functions from choosegame.mjs
 //Functions for game selection buttons on choosegame.html
 /**************************************************************/
-import { initChooseGame, gnomeButton, GTNpageBtn } from './choosegame.mjs';
+import { initChooseGame, gnomeButton, GTNpageBtn } from '../choosegame/choosegame.mjs';
 window.initChooseGame = initChooseGame;
 window.gnomeButton = gnomeButton;
 window.GTNpageBtn = GTNpageBtn;
@@ -39,9 +39,7 @@ window.GTNpageBtn = GTNpageBtn;
 //Functions from admin.mjs
 //Functions for admin page buttons and database management
 /**************************************************************/
-
-import {fb_WriteRec,fb_ReadAll,fb_deleteAll, fb_logoutUser}
-  from './admin.mjs';
+import { fb_WriteRec, fb_ReadAll, fb_deleteAll, fb_logoutUser } from '../admin/admin.mjs';
   //write button
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("writeBtn");
@@ -76,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //Functions for leaderboard buttons and displaying scores
 //Leaderboards for GTN and Gnome Dodger
 /**************************************************************/
-import { ldrBoard1, ldrBoard2, } from './leaderboards.mjs';
+import { ldrBoard1, ldrBoard2 } from '../leaderboards/leaderboards.mjs';
 window.ldrBoard1 = ldrBoard1;
 window.ldrBoard2 = ldrBoard2;
 
@@ -106,7 +104,7 @@ window.sleep = sleep; // Export sleep function to global scope for use in other 
 //Functions from GTNpage.mjs
 //Functions for GTN game setup, menu button, and lobby creation
 /**************************************************************/
-import { lobbyCreate, menuBtn } from './GTNpage.mjs';
+import { lobbyCreate, menuBtn } from '../gtn/GTNpage.mjs';
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("createBtn");
   if (btn) {

@@ -38,7 +38,7 @@ let numberGenerated = false;
 //FIREBASE IMPORTS AND PAGE SETUP
 /*******************************************************/
 
-import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from './fb_core.mjs';
+import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH, fb_getPfp } from '../firebase/fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue, get, set, remove, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 /**********************************************************/
@@ -64,7 +64,7 @@ export function setupGTNgame() {
 
     } else {
       console.warn("No user signed in.");
-      // window.location.href = "index.html";
+      // window.location.href = "../registration/index.html";
     }
   });
 
@@ -104,7 +104,7 @@ function loadActiveGame(USERREF) {
   onValue(GAMEREF, (snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Active game no longer exists.");
-      // window.location.href = "GTNpage.html";
+      // window.location.href = "./GTNpage.html";
       return;
     }
     const gameData = snapshot.val();
@@ -124,7 +124,7 @@ function loadActiveGame(USERREF) {
         console.log("Player is part of this game.");
       } else {
         console.warn("Player is not part of this game.");
-        // window.location.href = "GTNpage.html";
+        // window.location.href = "./GTNpage.html";
         return;
       }
       createGTNgameNumber(gameData);
@@ -166,7 +166,7 @@ function loadActiveGame(USERREF) {
 //   get(USERREF).then((snapshot) => {
 //     if (!snapshot.exists()) {
 //       console.warn("Active game no longer exists.");
-//       // window.location.href = "GTNpage.html";
+//       // window.location.href = "./GTNpage.html";
 //       return;
 //     }
 //     const userData = snapshot.val();
@@ -187,8 +187,8 @@ function playerPFPDisplay(gameData) {
   const p1Name = document.getElementById("player1Name");
   const p2Name = document.getElementById("player2Name");
 
-  if (p1Pfp) p1Pfp.src = gameData.player1Pfp || "images/defaultpfp.png";
-  if (p2Pfp) p2Pfp.src = gameData.player2Pfp || "images/defaultpfp.png";
+if (p1Pfp) p1Pfp.src = gameData.player1Pfp || "../images/defaultpfp.png";
+if (p2Pfp) p2Pfp.src = gameData.player2Pfp || "../images/defaultpfp.png";
 
   if (p1Name) p1Name.innerText = gameData.player1Name || "Player 1";
   if (p2Name) p2Name.innerText = gameData.player2Name || "Player 2";

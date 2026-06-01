@@ -9,18 +9,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/addons/p5.sound.js" integrity="sha512-TU9AWtV5uUZPX8dbBAH8NQF1tSdigPRRT82vllAQ1Ke28puiqLA6ZVKxtUGlgrH6yWFnkKy+sE6luNEGH9ar0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://p5play.org/v3/planck.min.js"></script>
   <script src="https://p5play.org/v3/p5play.js"></script>
-  <link rel="stylesheet" href="./css/game1.css" />
+  <link rel="stylesheet" href="../css/game1.css" />
 </head>
 <body>
   <nav class="pages">
     <div class="pagesLeft">
-      <div class="page"><a href="GTNpage.html">Guess The Number</a></div>
-      <div class="page"><a href="leaderboards.html">Leaderboards</a></div>
-      <div class="page"><a href="admin.html">ADMIN LOGIN</a></div>
+      <div class="page"><a href="../gtn/GTNpage.html">Guess The Number</a></div>
+      <div class="page"><a href="../leaderboards/leaderboards.html">Leaderboards</a></div>
+      <div class="page"><a href="../admin/admin.html">ADMIN LOGIN</a></div>
     </div>
 
     <div class="pagesProfile">
-      <img id="pfp" class="pfp" src="images/defaultpfp.png" alt="Profile Picture" />
+      <img id="pfp" class="pfp" src="../images/defaultpfp.png" alt="Profile Picture" />
     </div>
   </nav>
   <h1>P5Play: GnomeDodger</h1>
@@ -29,9 +29,9 @@
 <button id="backBtn" onclick="menuBtn()">Back to Main Menu</button>
 
 
-  <script type="module" src="game1.mjs"></script>
+  <script type="module" src="../gnome/game1.mjs"></script>
   <script type="module">
-    import { setupGame1 } from './game1.mjs';
+    import { setupGame1 } from '../gnome/game1.mjs';
     setupGame1();</script>
   <p>Made with p5.play and Google Firebase</p>
 </body>

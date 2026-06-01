@@ -4,19 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Database Project</title>
-  <link rel="stylesheet" href="css/choosegame.css" />
+  <link rel="stylesheet" href="../css/choosegame.css" />
 </head>
 <body>
 
 <nav class="pages">
   <div class="pagesLeft">
     <div class="page" id="Current">Games</div>
-    <div class="page"><a href="leaderboards.html">Leaderboards</a></div>
-    <div class="page"><a href="admin.html">ADMIN LOGIN</a></div>
+    <div class="page"><a href="../leaderboards/leaderboards.html">Leaderboards</a></div>
+    <div class="page"><a href="../admin/admin.html">ADMIN LOGIN</a></div>
   </div>
 
   <div class="pagesProfile">
-    <img id="pfp" class="pfp" src="images/defaultpfp.png" alt="Profile Picture" />
+    <img id="pfp" class="pfp" src="../images/defaultpfp.png" alt="Profile Picture" />
   </div>
 </nav>
 
@@ -29,11 +29,10 @@
       <button onclick="GTNpageBtn()">Guess the Number</button>
     </div>
   </div>
-</div>
 
-<script type="module" src="./main.mjs"></script>
+<script type="module" src="../firebase/main.mjs"></script>
 <script type="module">
-    import { setupChooseGame} from './choosegame.mjs';
+    import { setupChooseGame } from './choosegame.mjs';
     setupChooseGame();
 </script>
  <p>Made with p5.play and Google Firebase</p>
