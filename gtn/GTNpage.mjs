@@ -564,7 +564,7 @@ async function lobbyTransfer(lobbyID, lobbyData) {
     player1Guesses: 0,
     player2Guesses: 0,
     // game status
-    gameStatus: "Loading",
+    gameState: "Loading",
   });
 
   console.log("Lobby transferred to activeGames:", lobbyID);

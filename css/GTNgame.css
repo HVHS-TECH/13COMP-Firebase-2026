@@ -37,9 +37,14 @@ h1 {
 p {
   margin-top: 6px;
 }
-
+.leaveBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+   background: green;
+}
 button {
-  background: linear-gradient(135deg, var(--electric-blue), var(--aero));
+  background: var(--electric-blue);
   color: var(--rich-black);
   border: none;
   padding: 16px 20px;
