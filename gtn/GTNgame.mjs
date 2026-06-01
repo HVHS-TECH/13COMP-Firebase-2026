@@ -111,10 +111,7 @@ function loadActiveGame(USERREF) {
   onValue(GAMEREF, (snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Active game no longer exists.");
-<<<<<<< HEAD:gtn/GTNgame.mjs
       // window.location.href = "./GTNpage.html";
-=======
->>>>>>> 61c04b595c3388321dba8f72ffd05740e1a7cbaf:GTNgame.mjs
       return;
     }
 
@@ -138,7 +135,6 @@ function loadActiveGame(USERREF) {
 
     if (!numberGenerated) {
       numberGenerated = true;
-<<<<<<< HEAD:gtn/GTNgame.mjs
       if (gameData.player1 === currentUser.uid || gameData.player2 === currentUser.uid) {
         console.log("Player is part of this game.");
       } else {
@@ -146,8 +142,6 @@ function loadActiveGame(USERREF) {
         // window.location.href = "./GTNpage.html";
         return;
       }
-=======
->>>>>>> 61c04b595c3388321dba8f72ffd05740e1a7cbaf:GTNgame.mjs
       createGTNgameNumber(gameData);
 
       update(GAMEREF, {
@@ -156,7 +150,6 @@ function loadActiveGame(USERREF) {
     }
   });
 }
-<<<<<<< HEAD:gtn/GTNgame.mjs
 /*******************************************************/
 // loadPlayerData
 // Loads player data from Firebase for the current GTN match
@@ -174,10 +167,7 @@ function loadActiveGame(USERREF) {
 //     }
 //     const userData = snapshot.val();
 
-//   });
-// }
-=======
->>>>>>> 61c04b595c3388321dba8f72ffd05740e1a7cbaf:GTNgame.mjs
+//   })
 /**********************************************************/
 //playerPFPDisplay
 // Displays player profile pictures and names in the game lobby
@@ -192,8 +182,8 @@ function playerPFPDisplay(gameData) {
   const p1Name = document.getElementById("player1Name");
   const p2Name = document.getElementById("player2Name");
 
-if (p1Pfp) p1Pfp.src = gameData.player1Pfp || "../images/defaultpfp.png";
-if (p2Pfp) p2Pfp.src = gameData.player2Pfp || "../images/defaultpfp.png";
+  if (p1Pfp) p1Pfp.src = gameData.player1Pfp || "../images/defaultpfp.png";
+  if (p2Pfp) p2Pfp.src = gameData.player2Pfp || "../images/defaultpfp.png";
 
   if (p1Name) p1Name.innerText = gameData.player1Name || "Player 1";
   if (p2Name) p2Name.innerText = gameData.player2Name || "Player 2";
@@ -402,9 +392,9 @@ function displayTurn(gameData) {
   const pfpTurn = document.querySelector(".pfpTurn");
 
   if (gameData.turn === gameData.player1) {
-    pfpTurn.src = gameData.player1Pfp;
+    pfpTurn.src = gameData.player1Pfp || "../images/defaultpfp.png";
   } else {
-    pfpTurn.src = gameData.player2Pfp;
+    pfpTurn.src = gameData.player2Pfp || "../images/defaultpfp.png";
   }
 
   pfpTurn.classList.remove("yourTurn");
@@ -594,7 +584,7 @@ function leaveActiveGame() {
 
     if (gameData.gameState === "finished") {
       console.log("Game already finished. Leave button will not award another win.");
-      window.location.href = "GTNpage.html";
+      window.location.href = "./GTNpage.html";
       return;
     }
 
@@ -623,7 +613,7 @@ function leaveActiveGame() {
       resultSaved: true
     }).then(() => {
       console.log("Player left the game. Winner declared: " + winnerName);
-      window.location.href = "GTNpage.html";
+      window.location.href = "./GTNpage.html";
     });
 
 
