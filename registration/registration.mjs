@@ -97,7 +97,7 @@ function writeUserInfo() {
       document.getElementById("statusMessage").innerText =
         "Data written to " + RECORDPATH;
 
-      window.location.href = "../choosegame/choosegame.html";
+      window.location.href = "./choosegame/choosegame.html";
     })
     .catch((error) => {
       console.error("Error writing data:", error);

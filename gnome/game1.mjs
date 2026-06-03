@@ -294,46 +294,46 @@ export function fb_saveScore() {
     });
 }
 
-export function menuBtn() {
-  const btn = document.getElementById("backBtn");
-  if (!btn) return;
+// export function menuBtn() {
+//   const btn = document.getElementById("backBtn");
+//   if (!btn) return;
 
-  let message = document.getElementById("menuMsg");
-  if (!message) {
-    message = document.createElement("p");
-    message.id = "menuMsg";
-    message.textContent = "⚠️ CLICK AGAIN TO CONFIRM ⚠️";
+//   let message = document.getElementById("menuMsg");
+//   if (!message) {
+//     message = document.createElement("p");
+//     message.id = "menuMsg";
+//     message.textContent = "⚠️ CLICK AGAIN TO CONFIRM ⚠️";
 
-    // Styling
-    message.style.width = btn.offsetWidth + 200 + "px";
-    message.style.fontSize = "18px";
-    message.style.fontWeight = "bold";
-    message.style.color = "#00ffff";
-    message.style.background = "linear-gradient(90deg, #7092cf, #4b8ccd)"; // gradient background
-    message.style.padding = "8px 0"; // vertical padding only
-    message.style.borderRadius = "8px";
-    message.style.marginTop = "0.5rem";
-    message.style.display = "none";
-    message.style.textAlign = "center";
-    message.style.letterSpacing = "1.5px";
-    message.style.textShadow = "0 0 6px #00ffff, 0 0 12px #00ccff";
-    message.style.animation = "pulse 1s infinite alternate";
+//     // Styling
+//     message.style.width = btn.offsetWidth + 200 + "px";
+//     message.style.fontSize = "18px";
+//     message.style.fontWeight = "bold";
+//     message.style.color = "#00ffff";
+//     message.style.background = "linear-gradient(90deg, #7092cf, #4b8ccd)"; // gradient background
+//     message.style.padding = "8px 0"; // vertical padding only
+//     message.style.borderRadius = "8px";
+//     message.style.marginTop = "0.5rem";
+//     message.style.display = "none";
+//     message.style.textAlign = "center";
+//     message.style.letterSpacing = "1.5px";
+//     message.style.textShadow = "0 0 6px #00ffff, 0 0 12px #00ccff";
+//     message.style.animation = "pulse 1s infinite alternate";
 
-    btn.insertAdjacentElement("afterend", message);
-  }
+//     btn.insertAdjacentElement("afterend", message);
+//   }
 
-  if (!confirmState) {
-    confirmState = true;
-    message.style.display = "block";
+//   if (!confirmState) {
+//     confirmState = true;
+//     message.style.display = "block";
 
-    setTimeout(() => {
-      confirmState = false;
-      message.style.display = "none";
-    }, 5000);
-  } else {
-    window.location.href = "../choosegame/choosegame.html";
-  }
-};
+//     setTimeout(() => {
+//       confirmState = false;
+//       message.style.display = "none";
+//     }, 5000);
+//   } else {
+//     // window.location.href = "../choosegame/choosegame.html";
+//   }
+// }
 /******************************************************/
 // button detections (remove this)
 window.menuBtn = menuBtn;

@@ -96,7 +96,7 @@ async function fb_userLogin() {
         console.log("User already logged in:", user.email);
         document.getElementById('userinfotext').innerText =
           "Already logged in as: " + (user.displayName || "Unknown User");
-        window.location.href = "../choosegame/choosegame.html";
+        window.location.href = "./choosegame/choosegame.html";
         console.log("Redirecting to choosegame.html...");
       } else {
         console.log("User data invalid or incomplete. Cannot redirect.");
@@ -147,7 +147,7 @@ function fb_checkUser() {
             console.log("User is still logged in:", user.email);
             if (window.location.href.includes("index.html")) {  
                 console.log("Redirecting to choosegame.html...");
-                window.location.href = "../choosegame/choosegame.html";
+                window.location.href = "./choosegame/choosegame.html";
             }
         } else {
             console.log("No user logged in, redirecting to login..."); // Redirect to login page
@@ -186,7 +186,7 @@ export async function fb_checkInfo() {
         "%cRequired info filled out. Redirecting to choosegame.html...",
         "color: white; background: green; font-weight: bold; padding: 4px 8px; border-radius: 4px;"
       );
-      window.location.href = "../choosegame/choosegame.html";
+      window.location.href = "./choosegame/choosegame.html";
       await sleep(1000); 
 
       return true; // valid
