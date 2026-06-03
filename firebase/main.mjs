@@ -104,14 +104,14 @@ window.sleep = sleep; // Export sleep function to global scope for use in other 
 //Functions from GTNpage.mjs
 //Listeners for creating a lobby and navigating back to menu
 /**************************************************************/
-import { lobbyCreate, menuBtn } from '../gtn/GTNpage.mjs';
+import { lobbyCreate,  } from '../gtn/GTNpage.mjs'; ///menuBtn
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("createBtn");
   if (btn) {
     btn.addEventListener("click", lobbyCreate);
   }
 });
-window.menuBtn = menuBtn;
+// window.menuBtn = menuBtn;
 
 /****************************************************/
 /****************************************************************/
