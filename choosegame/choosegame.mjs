@@ -73,10 +73,10 @@ function gnomeButton() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log("Transporting to the Gnome game");
-      window.location.href = "./gnome/game1.html";
+      window.location.href = "../gnome/game1.html";
     } else if (!user) {
       alert("No user found, taking you back to login page");
-      window.location.href = "./index.html";
+      window.location.href = "../index.html";
     }else {
       console.error("Unexpected error state in gnomeButton");
     }
@@ -94,10 +94,10 @@ function GTNpageBtn() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log("Transporting to the GTN game");
-      window.location.href = "./GTN/GTNpage.html";
+      window.location.href = "../GTN/GTNpage.html";
     } else if (!user) {
       alert("No user found, taking you back to login page");
-      window.location.href = "./registration/index.html";
+      window.location.href = "../registration/index.html";
     }else {
       console.error("Unexpected error state in GTNpageBtn");
     }
