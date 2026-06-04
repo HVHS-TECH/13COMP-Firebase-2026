@@ -638,12 +638,12 @@ async function sendToGame(lobbyID) {
 //   }
 // }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("backBtn");
-  if (btn) {
-    btn.addEventListener("click", menuBtn);
-  }
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//   const btn = document.getElementById("backBtn");
+//   if (btn) {
+//     btn.addEventListener("click", menuBtn);
+//   }
+// });
 
 
 /*******************************************************/

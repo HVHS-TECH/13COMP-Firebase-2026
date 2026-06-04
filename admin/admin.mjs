@@ -13,7 +13,7 @@ console.log(
 /**************************************************************/
 // Essential Firebase Imports
 import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from '../firebase/fb_core.mjs';
-import { ref, query, orderByChild, limitToLast, onValue, get} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { ref, query, orderByChild, limitToLast, onValue, get, set} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 //**************************************************************/
@@ -198,7 +198,7 @@ function fb_deleteAll() {
   const auth = FB_AUTH;
   signOut(auth).then(() => {
     console.log("✅ User signed out.");
-    window.location.href = "../registration/index.html";
+    window.location.href = "../index.html";
   }).catch((error) => {
     console.error("❌ Sign out error:", error);
   });
