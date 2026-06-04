@@ -198,7 +198,7 @@ function fb_deleteAll() {
   const auth = FB_AUTH;
   signOut(auth).then(() => {
     console.log("✅ User signed out.");
-    window.location.href = "../registration/index.html";
+    window.location.href = "../index.html";
   }).catch((error) => {
     console.error("❌ Sign out error:", error);
   });
