@@ -203,5 +203,5 @@ window.addEventListener("DOMContentLoaded", () => {
 /********************************************************************
  * TODO
  * - Win Leaderboard
- *
+ * - remove animations GTN leaderboard 
  **********************************************************************/

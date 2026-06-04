@@ -178,10 +178,10 @@ export async function fb_checkInfo() {
   const DATAREF = ref(FB_GAMEDB, READPATH);
   try {
     const snapshot = await get(DATAREF);
-    const fb_data = snapshot.val();
+    const userData = snapshot.val();
 
-    if (snapshot.exists() && fb_data === true) {
-      console.log("Data successfully read:", fb_data);
+    if (snapshot.exists() && userData === true) {
+      console.log("Data successfully read:", userData);
       console.log(
         "%cRequired info filled out. Redirecting to choosegame.html...",
         "color: white; background: green; font-weight: bold; padding: 4px 8px; border-radius: 4px;"

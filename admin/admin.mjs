@@ -49,6 +49,7 @@ export function setupAdmin() {
       }
 
       initAdmin(user);
+      checkAdmin(user);
     });
   });
 }
@@ -190,6 +191,9 @@ function fb_deleteAll() {
     });
 
 }
+
+
+
  function fb_logoutUser() {
   const auth = FB_AUTH;
   signOut(auth).then(() => {
@@ -200,3 +204,23 @@ function fb_deleteAll() {
   });
 }
 
+function checkAdmin(user) {
+  const currentUID = user.uid;
+  const ADMINREF = ref(FB_GAMEDB, "admins/" + currentUID);
+
+  get(ADMINREF)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log("Admin verified:", currentUID);
+      } else {
+        console.warn("User is not an admin:", currentUID);
+        alert("You are not authorised to view this page.");
+        window.location.href = "../choosegame/choosegame.html";
+      }
+    })
+    .catch((error) => {
+      console.error("Error checking admin status:", error);
+      alert("Could not verify admin access.");
+      window.location.href = "../choosegame/choosegame.html";
+    });
+}
