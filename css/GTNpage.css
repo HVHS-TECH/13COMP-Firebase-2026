@@ -132,7 +132,6 @@ nav.pages {
   height: 67px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--electric-blue);
   cursor: pointer;
 }
 
