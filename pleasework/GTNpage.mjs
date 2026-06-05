@@ -650,32 +650,6 @@ async function sendToGame(lobbyID) {
 // TEMPORARY FUNCTIONS FOR TESTING
 /*******************************************************/
 
-// TEMPORARY LOBBY REMOVER
-const deleteLobbiesBtn = document.createElement("button");
-deleteLobbiesBtn.innerText = "Delete All Lobbies (Temp)";
-deleteLobbiesBtn.style.backgroundColor = "red";
-deleteLobbiesBtn.style.color = "white";
-deleteLobbiesBtn.style.margin = "10px";
-deleteLobbiesBtn.style.padding = "8px 12px";
-document.body.appendChild(deleteLobbiesBtn);
-
-// Event listener for deleting all lobbies
-deleteLobbiesBtn.addEventListener("click", async () => {
-  if (!confirm("Are you SURE you want to delete ALL lobbies? This cannot be undone.")) {
-    console.log("%cCancelled: no lobbies deleted.", "color: orange; font-weight: bold;");
-    return;
-  }
-
-  try {
-    const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies");
-    await remove(LOBBYREF);
-    console.log("%cSuccess: All lobbies deleted!",
-      "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;");
-    lobbyClear();
-  } catch (error) {
-    console.error("%cError deleting lobbies:", "color: red; font-weight: bold; font-size: 25px; background: black; padding: 10px; border: 3px solid red;", error);
-  }
-});
 /*******************************************************/
 //TO DO
 //Make it so you can't create a lobby if you are already in one, or already have one created
