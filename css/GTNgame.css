@@ -95,7 +95,6 @@ nav.pages {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2px solid var(--electric-blue);
 }
 #p_feedback {
   text-align: center;
@@ -159,7 +158,6 @@ nav.pages {
   border-radius: 50%;
   object-fit: cover;
 
-  border: 3px solid var(--electric-blue);
   padding: 4px;
   background-color: var(--space-cadet);
 
