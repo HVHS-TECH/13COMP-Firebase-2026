@@ -194,7 +194,7 @@ nav.pages {
   background-color: var(--panel-bg);
 
   border: 2px solid var(--electric-blue);
-  border-radius: 16px;
+  border-radius: 2px;
 
   padding: 28px;
   text-align: center;
