@@ -37,7 +37,7 @@ h1, h2, h3, p {
 }
 
 button {
-  background: linear-gradient(135deg, var(--electric-blue), var(--aero));
+  background:var(--electric-blue);
   color: var(--rich-black);
   border: none;
   padding: 20px 25px;
@@ -271,7 +271,6 @@ nav.pages {
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  border: 3px solid var(--electric-blue);
   object-fit: cover;
   box-shadow: 0 0 14px rgba(0, 224, 255, 0.35);
   background-color: var(--space-cadet);
