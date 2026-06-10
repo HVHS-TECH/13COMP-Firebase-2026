@@ -105,7 +105,7 @@ export function lobbyCreate() {
 
 
   currentUser = FB_AUTH.currentUser;
-  lobbyClear();
+  lobbyClear(currentUser);
   console.log("%cCreated lobby for user:" + currentUser.displayName, "color: green; font-weight: bold;");
   if (!currentUser) {
     console.error("No user found, please log in.");
@@ -310,7 +310,7 @@ async function lobbyJoin(lobbyID, Btn) {
 // Input: n/a
 // Return: n/a
 /*******************************************************/
-function lobbyClear() {
+function lobbyClear(currentUser) {
   const LOBBYELM = document.getElementById("lobbyElm");
   const LOBBYNUM = LOBBYELM.getElementsByClassName("lobbyBox");
 
@@ -656,3 +656,5 @@ async function sendToGame(lobbyID) {
 //You must leave your current lobby to join someone else's
 // Sort p1 and p2 into different branches firebase ( ADD TO DOCUMENTATION FOR ITERATIVE)
 // Make a class for LOBBIES instead of passing it into loads of functions
+
+// People can create more than one lobby 

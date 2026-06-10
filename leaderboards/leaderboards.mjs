@@ -160,7 +160,6 @@ function ldrBoard2() {
             scores.push(child.val());
           });
 
-          scores.reverse(); 
           console.log("Reversed GTN Lowest Guesses scores:", scores);
           scoreList2.innerHTML = "";
 
@@ -204,4 +203,5 @@ window.addEventListener("DOMContentLoaded", () => {
  * TODO
  * - Win Leaderboard
  * - remove animations GTN leaderboard 
+ *  - Leaderboards may be backwards
  **********************************************************************/
