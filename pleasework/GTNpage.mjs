@@ -102,32 +102,65 @@ function generateLobbyID() {
 // Input: n/a
 /*******************************************************/
 export function lobbyCreate() {
-
-
   currentUser = FB_AUTH.currentUser;
-  lobbyClear(currentUser);
-  console.log("%cCreated lobby for user:" + currentUser.displayName, "color: green; font-weight: bold;");
-  if (!currentUser) {
-    console.error("No user found, please log in.");
-    p_lobbyStatus.innerText = "Error: No user found. Please log in.";
-    window.location.href = "../registration/index.html";
-    return;
-  }
-  const RECORDPATH = "GTN/lobbies/" + generateLobbyID(currentUser);
-  const DATAREF = ref(FB_GAMEDB, RECORDPATH);
-  set(DATAREF, {
-    player1: currentUser.uid,
-    active: true,
-    players: 1,
-    player1Name: currentUser.displayName || "Anon Player",
-    player1Pfp: currentUser.photoURL || null,
-  })
-    .then(() => {
-      console.log("Lobby created with ID:", RECORDPATH);
-    });
+  lobbyUserCheck(currentUser).then((alreadyInLobby) => {
+    if (alreadyInLobby) {
+      const status = document.getElementById("p_lobbyStatus");
+      if (status) {
+        status.innerText = "You are already in a lobby. Leave it before creating another one.";
+      }
+      console.warn("Lobby creation blocked: user already in a lobby.");
+      return;
+    }
 
+    const RECORDPATH = "GTN/lobbies/" + generateLobbyID();
+    const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+
+    set(DATAREF, {
+      player1: currentUser.uid,
+      active: true,
+      players: 1,
+      player1Name: currentUser.displayName || "Anon Player",
+      player1Pfp: currentUser.photoURL || null,
+    }).then(() => {
+      console.log(
+        "%cCreated lobby for user: " + currentUser.displayName,
+        "color: green; font-weight: bold;"
+      );
+    });
+  });
 }
 
+/*******************************************************/
+// lobbyUserCheck
+// Checks Firebase to see if the current user is already in a lobby.
+// Looks through all GTN lobbies and checks if the user's UID is
+// stored as either player1 or player2.
+// Returns true if the user is already in a lobby, otherwise false.
+/*******************************************************/
+function lobbyUserCheck(currentUser) {
+  const LOBBIESREF = ref(FB_GAMEDB, "GTN/lobbies");
+
+  return get(LOBBIESREF).then((snapshot) => {
+    if (!snapshot.exists()) {
+      return false;
+    }
+
+    const LOBBIES = snapshot.val();
+
+    for (const [lobbyID, lobbyData] of Object.entries(LOBBIES)) {
+      if (
+        lobbyData.player1 === currentUser.uid ||
+        lobbyData.player2 === currentUser.uid
+      ) {
+        console.warn("User is already in lobby:", lobbyID);
+        return true;
+      }
+    }
+
+    return false;
+  });
+}
 
 /*******************************************************/
 // lobbyAdd
@@ -398,6 +431,9 @@ function lobbyDisconnect(lobbyID) {
   });
 
 }
+
+
+
 
 /*******************************************************/
 //lobbyDetect
