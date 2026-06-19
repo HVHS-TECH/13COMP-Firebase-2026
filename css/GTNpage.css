@@ -179,7 +179,6 @@ nav.pages {
 
 .lobbyBox.owner {
   border: 2px solid var(--electric-blue);
-  box-shadow: 0 0 12px rgba(111, 224, 232, 0.2);
 }
 
 /*******************************************************/

@@ -37,11 +37,11 @@ h1 {
 p {
   margin-top: 6px;
 }
-.leaveBtn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-   background: green;
+ 
+#leaveBtn:active {
+  background-color: var(--space-cadet);
+  color: var(--antiflash-white);
+  filter: none;
 }
 button {
   background: var(--electric-blue);
@@ -55,7 +55,7 @@ button {
 }
 
 button:hover {
-  filter: brightness(1.05);
+  filter: brightness(1.25);
 }
 
 /*******************************************************/

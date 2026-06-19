@@ -276,9 +276,11 @@ async function ownerCheck(Btn, lobbyID) {
       Btn.remove();
 
       const OWNERLABEL = document.createElement("div");
+      
       OWNERLABEL.innerText = "Your Lobby";
       OWNERLABEL.style.fontWeight = "bold";
       OWNERLABEL.style.color = "#68b6ff";
+
       LOBBYDIV.appendChild(OWNERLABEL);
 
       return true;

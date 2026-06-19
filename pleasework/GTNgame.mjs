@@ -120,6 +120,8 @@ function loadActiveGame(USERREF) {
       return;
     }
 
+    updateGuessControls(gameData);
+
     if (checkGameEnd(gameData, USERREF)) {
       return;
     }
@@ -129,7 +131,6 @@ function loadActiveGame(USERREF) {
     playerPFPDisplay(gameData);
     displayTurn(gameData);
     displayLastGuess(gameData);
-    checkGameEnd(gameData, USERREF);
 
     if (!numberGenerated) {
       numberGenerated = true;
@@ -261,7 +262,6 @@ function submitGuess() {
     gameData.lastGuess = guess;
     gameData.lastGuesser = currentUser.uid;
 
-    document.getElementById("guessStatus").innerText = "Guessed: " + guess;
     console.log("Player guessed: " + guess);
     displayGuessResult(guess, gameData);
     turnSwitch(gameData, guess);
@@ -315,6 +315,23 @@ function turnSwitch(gameData, guess) {
     fb_AddGuess(gameData.player2Guesses, "player2Guesses");
     storeGuess(guess, gameData);
   }
+}
+
+/*******************************************************/
+// updateGuessControls
+// Enables the guess input and button only when it is the current user's turn
+// Disables them when it is not their turn or when the game is finished
+// Input: gameData
+// Return: n/a
+/*******************************************************/
+function updateGuessControls(gameData) {
+  const guessInput = document.getElementById("guessInput");
+  const guessBtn = document.getElementById("guessBtn");
+  const isMyTurn = gameData.turn === currentUser.uid;
+  const isPlaying = gameData.gameState === "playing";
+
+  guessInput.disabled = !isMyTurn || !isPlaying; // disable if not turn or game ended
+  guessBtn.disabled = !isMyTurn || !isPlaying;
 }
 /*******************************************************/
 // fb_AddGuess
