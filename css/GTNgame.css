@@ -241,11 +241,8 @@ nav.pages {
   font-weight: bold;
 }
 
-/*******************************************************/
-/* GAME RESULT DISPLAY */
-/*******************************************************/
-#guessResultDisplay {
-  margin-top: 18px;
+#otherGuessDisplay {
+  margin: 18px 0;
   padding: 12px;
 
   background-color: var(--space-cadet);
@@ -256,6 +253,9 @@ nav.pages {
   font-weight: bold;
   text-align: center;
 }
+/*******************************************************/
+/* GUESS RESULT DISPLAY */
+/*******************************************************/
 
 .turnDisplay {
   margin: 1rem 0;
@@ -266,6 +266,22 @@ nav.pages {
   width: 60px;
   height: 60px;
   border-radius: 50%;
+}
+#guessArrow {
+  width: 28px;
+  height: 28px;
+  display: block;
+  margin: 8px auto 0;
+}
+/*******************************************************/
+/* TURN DISPLAY */
+/*******************************************************/
+.turnActive {
+  display: block;
+}
+
+.turnHidden {
+  display: none;
 }
 /*******************************************************/
 /* RESPONSIVE */

@@ -319,20 +319,39 @@ function turnSwitch(gameData, guess) {
 
 /*******************************************************/
 // updateGuessControls
-// Enables the guess input and button only when it is the current user's turn
-// Disables them when it is not their turn or when the game is finished
+// Keeps the guess input visible, but only shows/enables the guess button
+// when it is the current user's turn and the game is playing
 // Input: gameData
 // Return: n/a
 /*******************************************************/
 function updateGuessControls(gameData) {
   const guessInput = document.getElementById("guessInput");
   const guessBtn = document.getElementById("guessBtn");
+  const guessStatus = document.getElementById("guessStatus");
+
   const isMyTurn = gameData.turn === currentUser.uid;
   const isPlaying = gameData.gameState === "playing";
 
-  guessInput.disabled = !isMyTurn || !isPlaying; // disable if not turn or game ended
-  guessBtn.disabled = !isMyTurn || !isPlaying;
+  if (isPlaying && isMyTurn) {
+    guessInput.placeholder = "Your turn! Enter a guess...";
+    guessInput.disabled = false;
+
+    guessBtn.disabled = false;
+    guessBtn.classList.add("turnActive");
+    guessBtn.classList.remove("turnHidden");
+
+  } else {
+    guessInput.placeholder = "Waiting for the other player...";
+    guessInput.value = "";
+    guessInput.disabled = true;
+
+    guessBtn.disabled = true;
+    guessBtn.classList.remove("turnActive");
+    guessBtn.classList.add("turnHidden");
+
+  }
 }
+
 /*******************************************************/
 // fb_AddGuess
 // Adds 1 to a player's guess count in Firebase
@@ -352,41 +371,19 @@ function fb_AddGuess(playerWhoGuessed, playerField) {
 // Called by submitGuess() after validating the guess and logging it to the console
 /*******************************************************/
 function displayGuessResult(guess, gameData) {
-  const RESULT = document.getElementById("guessResultDisplay");
+  const ARROW = document.getElementById("guessArrow");
 
-  let message = "";
-  if (typeof gameData.gameNum === 'number') {
-    if (guess < gameData.gameNum) {
-      message = "Too low!";
-      console.log(message);
-      if (guess >= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
-        message = "Too Low! 🔥🔥🔥";
-        console.log(message);
-      }
-    } else if (guess > gameData.gameNum) {
-      message = "Too high!";
-      console.log(message);
-      if (guess >= gameData.gameNum - 10 && guess <= gameData.gameNum + 10) {
-        message = "Too High! 🔥🔥🔥";
-        console.log(message);
-      }
-    } else if (guess === gameData.gameNum) {
-      message = "Correct!";
-      console.log(message);
-
-      update(GAMEREF, {
-        gameState: "finished",
-        winner: currentUser.uid,
-        winnerName: currentUser.displayName || "Player",
-        winType: "guess"
-      });
-    }
-  } else {
-    message = "Result pending...";
+  if (!ARROW) {
+    console.warn("guessArrow image not found.");
+    return;
   }
-  RESULT.innerText = message;
-}
 
+  if (guess > gameData.gameNum) {
+    ARROW.src = "../images/downarrow.png";
+  } else {
+    ARROW.src = "../images/uparrow.png";
+  }
+}
 /*******************************************************/
 //displayTurn
 // Checks whose turn it is based on the turn uid stored in Firebase
@@ -480,7 +477,7 @@ function displayWins(p1Wins, p2Wins) {
 // Return: n/a
 /*******************************************************/
 function displayGameOver(gameData) {
-  const RESULT = document.getElementById("guessResultDisplay");
+  const RESULT = document.getElementById("otherGuessDisplay");
   const guessBtn = document.getElementById("guessBtn");
   const guessInput = document.getElementById("guessInput");
 
