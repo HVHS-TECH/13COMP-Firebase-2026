@@ -145,7 +145,7 @@ p {
 }
 
 #scoreList1 li:nth-child(3), #scoreList2 li:nth-child(3) {
-  color: #cd7f32; /* bronze */
+  color: #cd7f32; 
 }
 
 .container {
