@@ -184,7 +184,7 @@ function lobbyAdd(lobbyID, lobbyData) {
     const startBtn = document.createElement("button");
     startBtn.innerText = "Start Game";
 
-    startBtn.onclick = () => sendToGame(lobbyID);
+    startBtn.onclick = () => sendToGame(lobbyID); // SPLIT THIS TO NEW FUNCTION
 
     LOBBY.appendChild(startBtn);
   }
@@ -586,6 +586,12 @@ function lobbyStartGameCheck(LOBBIES) {
   });
 }
 
+/*******************************************************/
+// lobbyTransfer
+// Transfers lobby data to the activeGames section of firebase, allowing the game page to access it
+// Called by lobbyStartGameCheck when a game is started, before redirecting to the game page
+//Input: lobbyID, lobbyData 
+/*******************************************************/
 async function lobbyTransfer(lobbyID, lobbyData) {
   const TRANSFERREF = ref(FB_GAMEDB, "GTN/activeGames/" + lobbyID);
 

@@ -1,5 +1,5 @@
 
-/**********************************************************/ 
+/**********************************************************/
 //Leaderboards page
 //Functions for leaderboard buttons and displaying scores
 //Leaderboards for GTN and Gnome Dodger
@@ -10,7 +10,7 @@ console.log(
 );
 /**************************************************************/
 // Essential Firebase Imports
-import {FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from '../firebase/fb_core.mjs';
+import { FB_GAMEAPP, FB_GAMEDB, FB_AUTH } from '../firebase/fb_core.mjs';
 import { ref, query, orderByChild, limitToLast, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 let username = localStorage.getItem("username");
@@ -18,8 +18,8 @@ let username = localStorage.getItem("username");
 /******************************************************/
 //EXPORT FUNCTIONS
 export {
-    ldrBoard1,
-    ldrBoard2,
+  ldrBoard1,
+  ldrBoard2,
 
 };
 
@@ -31,9 +31,9 @@ export {
 // the function redirects the user back to the home page. If a valid
 // user is detected, the leaderboard page is initialized.
 // Input: n/a
- // Calls initLdrBoardPage() {passes user}, once authentication has been verified.
+// Calls initLdrBoardPage() {passes user}, once authentication has been verified.
 /**************************************************************/
- export function setupLdrBoardPage() {
+export function setupLdrBoardPage() {
   console.log("setupLdrBoardPage called");
   document.addEventListener("DOMContentLoaded", () => {
     onAuthStateChanged(FB_AUTH, (user) => {
@@ -55,13 +55,13 @@ export {
     if the user object contains a photoURL.
 
 **********************************************/
- function initLdrBoardPage(user) { 
-    console.log("leaderboards.mjs loaded", user);
+function initLdrBoardPage(user) {
+  console.log("leaderboards.mjs loaded", user);
 
-    const pfpImg = document.getElementById("pfp");
-    if (pfpImg && user && user.photoURL) {
-        pfpImg.src = user.photoURL;
-    }
+  const pfpImg = document.getElementById("pfp");
+  if (pfpImg && user && user.photoURL) {
+    pfpImg.src = user.photoURL;
+  }
 }
 /******************************************************/
 // ldrBoard1 Gnome scores
@@ -71,7 +71,7 @@ export {
 // Return: n/a
 /******************************************************/
 function ldrBoard1() {
-    console.log("Loading Gnome Dodger Leaderboard");
+  console.log("Loading Gnome Dodger Leaderboard");
   const medals = ["🥇", "🥈", "🥉"];
   const auth = FB_AUTH;
 
@@ -79,7 +79,7 @@ function ldrBoard1() {
     if (user) {
       const ldrMenu = document.getElementById("ldrMenu");
       const scoreList1 = document.getElementById("scoreList1");
-        const currentUID = user.uid;
+      const currentUID = user.uid;
 
       if (ldrMenu.classList.contains("hidden")) {
         ldrMenu.classList.remove("hidden");
@@ -107,8 +107,8 @@ function ldrBoard1() {
             if (data.uid === currentUID) {
               li.style.backgroundColor = "var(--antiflash-white)";
               li.style.fontWeight = "bold";
-             }
-             if (index === 0 && data.uid === currentUID ) {
+            }
+            if (index === 0 && data.uid === currentUID) {
               li.style.color = "var(--poison-purple)";
             }
             scoreList1.appendChild(li);
@@ -153,11 +153,15 @@ function ldrBoard2() {
             return;
           }
           const scores = [];
-          const data = snapshot.val();
+
           snapshot.forEach(child => {
-             console.log("All GTN Lowest Guesses scores data:", data);
-             console.log("Child data:", child.val());
-            scores.push(child.val());
+            const scoreData = child.val();
+            console.log("GTN score data:", scoreData);
+
+            if ( scoreData.GTNFewestGuesses !== undefined && scoreData.GTNFewestGuesses !== null && scoreData.GTNFewestGuesses > 0) {
+              console.log("Valid score found:");
+              scores.push(scoreData);
+            }
           });
 
           console.log("Reversed GTN Lowest Guesses scores:", scores);
@@ -171,7 +175,8 @@ function ldrBoard2() {
             if (data.uid === currentUID) {
               li.style.backgroundColor = "var(--antiflash-white)";
               li.style.fontWeight = "bold";
-             } 
+              li.style.color = "var(--poison-purple)";
+            }
 
             if (index === 0 && data.uid == currentUID) {
               li.style.color = "var(--poison-purple)";
@@ -192,8 +197,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const btn1 = document.getElementById("ldrBtn");
   const btn2 = document.getElementById("ldrBtn2");
 
-  console.log('btn1:', btn1);  
-  console.log('btn2:', btn2);  
+  console.log('btn1:', btn1);
+  console.log('btn2:', btn2);
 
   if (btn1) btn1.addEventListener("click", ldrBoard1);
   if (btn2) btn2.addEventListener("click", ldrBoard2);

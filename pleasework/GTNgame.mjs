@@ -149,24 +149,7 @@ function loadActiveGame(USERREF) {
     }
   });
 }
-/*******************************************************/
-// loadPlayerData
-// Loads player data from Firebase for the current GTN match
-// Checks if the active game still exists before displaying crowns
-// Calls displayCrown() using the user data
-// Input: USERREF (Firebase reference)
-// Return: n/a
-/*******************************************************/
-// function loadPlayerData() {
-//   get(USERREF).then((snapshot) => {
-//     if (!snapshot.exists()) {
-//       console.warn("Active game no longer exists.");
-//       // window.location.href = "./GTNpage.html";
-//       return;
-//     }
-//     const userData = snapshot.val();
 
-//   })
 /**********************************************************/
 //playerPFPDisplay
 // Displays player profile pictures and names in the game lobby
@@ -198,7 +181,7 @@ function playerPFPDisplay(gameData) {
 function displayLastGuess(gameData) {
   const LASTGUESS = document.getElementById("otherGuessDisplay");
 
-  if (!LASTGUESS || gameData.lastGuess === undefined) {
+  if (!LASTGUESS || gameData.lastGuess === null || gameData.lastGuesser === null) {
     return;
   }
 
@@ -251,14 +234,11 @@ function submitGuess() {
       alert("It is not your turn.");
       return;
     }
-
-    // store last guess info in the game record so all clients can see it
     update(GAMEREF, {
       lastGuess: guess,
       lastGuesser: currentUser.uid
     });
 
-    // attach to local snapshot so the immediate UI update can use it
     gameData.lastGuess = guess;
     gameData.lastGuesser = currentUser.uid;
 
@@ -827,3 +807,4 @@ function getDisconWinnerName(gameData, winnerUID) {
 // OPTIONAL: Add a chat feature for players to talk during the game
 //Add data stealer for google autofill, to get classmates address
 /*******************************************************/
+

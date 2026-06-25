@@ -55,7 +55,7 @@ function writeUserInfo() {
         update(DATAREF, {
           uid: uid,
           name: NAME,
-          age: AGE,
+          age: Number(AGE),
           cell: PHONENUMBER,
           street: STREET,
           suburb: SUBURB,
@@ -67,7 +67,7 @@ function writeUserInfo() {
         set(DATAREF, {
           uid: uid,
           name: NAME,
-          age: AGE,
+          age: Number(AGE),
           gnomescore: 0,
           coinscore: 0,
           cell: PHONENUMBER,
