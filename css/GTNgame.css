@@ -9,8 +9,14 @@
   --antiflash-white: #F3F6F9;
   --text-muted: #9FB3C8;
 
+  --accent-glow: #00E0FF;
+  --accent-danger: #FF3C3C;
+
   --border-subtle: rgba(111, 224, 232, 0.2);
+  --sidebarWidth: 220px;
+  --poison-purple: #6A0DAD;
 }
+
 
 /*******************************************************/
 /* GLOBAL */

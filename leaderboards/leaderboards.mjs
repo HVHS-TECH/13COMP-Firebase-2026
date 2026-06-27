@@ -92,25 +92,50 @@ function ldrBoard1() {
             scoreList1.textContent = "No scores available.";
             return;
           }
+
           const scores = [];
           const data = snapshot.val();
           console.log("All Gnome scores data:", data);
+
           snapshot.forEach(child => {
-            scores.push(child.val());
+            const scoreData = child.val();
+            console.log("Gnome score data:", scoreData);
+
+            if (
+              scoreData.gnomescore !== undefined &&
+              scoreData.gnomescore !== null &&
+              scoreData.gnomescore > 0
+            ) {
+              console.log("Valid Gnome score found:");
+              scores.push(scoreData);
+            }
           });
-          scores.reverse(); //bc firebase scores are reversed
+
+          scores.reverse(); // bc firebase scores are reversed
           scoreList1.innerHTML = "";
+
+          if (scores.length === 0) {
+            scoreList1.textContent = "No valid scores available.";
+            return;
+          }
+
           scores.forEach((data, index) => {
             const li = document.createElement("li");
             const medal = medals[index] || "";
+
             li.textContent = `${medal} ${data.name}: ${data.gnomescore}`;
+
             if (data.uid === currentUID) {
               li.style.backgroundColor = "var(--antiflash-white)";
               li.style.fontWeight = "bold";
+              li.style.color = "var(--leaderboard-blue)";
+              li.textContent += " ← You";
             }
+
             if (index === 0 && data.uid === currentUID) {
-              li.style.color = "var(--poison-purple)";
+              li.style.color = "var(--leaderboard-blue)";
             }
+
             scoreList1.appendChild(li);
           });
         }, { onlyOnce: true });
@@ -175,11 +200,12 @@ function ldrBoard2() {
             if (data.uid === currentUID) {
               li.style.backgroundColor = "var(--antiflash-white)";
               li.style.fontWeight = "bold";
-              li.style.color = "var(--poison-purple)";
+              li.style.color = "var(--leaderboard-blue)";
+              li.textContent += " ← You";
             }
 
             if (index === 0 && data.uid == currentUID) {
-              li.style.color = "var(--poison-purple)";
+              li.style.color = "var(--leaderboard-blue)";
             }
             scoreList2.appendChild(li);
           });

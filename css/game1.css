@@ -1,10 +1,21 @@
- :root {
-      --electric-blue: #6FE0E8;
-      --space-cadet: #2A2A5A;
-      --aero: #05BEDD;
-      --antiflash-white: #F3F6F9;
-      --rich-black: #050517;
-    }
+:root {
+  --electric-blue: #6FE0E8;
+  --aero: #05BEDD;
+
+  --rich-black: #050517;
+  --space-cadet: #1E1F3F;
+  --panel-bg: #0B0F1F;
+
+  --antiflash-white: #F3F6F9;
+  --text-muted: #9FB3C8;
+
+  --accent-glow: #00E0FF;
+  --accent-danger: #FF3C3C;
+
+  --border-subtle: rgba(111, 224, 232, 0.2);
+  --sidebarWidth: 220px;
+  --poison-purple: #6A0DAD;
+}
 
     body {
       background-color: var(--rich-black);
