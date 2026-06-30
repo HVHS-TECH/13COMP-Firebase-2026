@@ -27,6 +27,7 @@ let randomNumber;
 let gameID = localStorage.getItem("GTNgameID");
 const GAMEREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID);
 let USERREF = null;
+let DISCONREF = null;
 
 let isPlayer1 = false;
 let isPlayer2 = false;
@@ -109,7 +110,6 @@ function loadActiveGame(USERREF) {
   onValue(GAMEREF, (snapshot) => {
     if (!snapshot.exists()) {
       console.warn("Active game no longer exists.");
-      // window.location.href = "./GTNpage.html";
       return;
     }
 
@@ -243,8 +243,11 @@ function submitGuess() {
     gameData.lastGuesser = currentUser.uid;
 
     console.log("Player guessed: " + guess);
-    displayGuessResult(guess, gameData);
-    turnSwitch(gameData, guess);
+    const gameEnded = displayGuessResult(guess, gameData);
+
+    if (!gameEnded) {
+      turnSwitch(gameData, guess);
+    }
   });
 }
 /*******************************************************/
@@ -355,7 +358,27 @@ function displayGuessResult(guess, gameData) {
 
   if (!ARROW) {
     console.warn("guessArrow image not found.");
-    return;
+    return false;
+  }
+
+  if (guess === gameData.gameNum) {
+    let winnerName = "Player";
+
+    if (currentUser.uid === gameData.player1) {
+      winnerName = gameData.player1Name || "Player 1";
+    } else if (currentUser.uid === gameData.player2) {
+      winnerName = gameData.player2Name || "Player 2";
+    }
+
+    update(GAMEREF, {
+      gameState: "finished",
+      winner: currentUser.uid,
+      winnerName: winnerName,
+      winType: "guess",
+      resultSaved: false
+    });
+
+    return true;
   }
 
   if (guess > gameData.gameNum) {
@@ -363,6 +386,8 @@ function displayGuessResult(guess, gameData) {
   } else {
     ARROW.src = "../images/uparrow.png";
   }
+
+  return false;
 }
 /*******************************************************/
 //displayTurn
@@ -422,7 +447,7 @@ function displayCrown(gameData) {
       } else if (p2Wins > p1Wins) {
         p1Crown.style.display = "none";
         p2Crown.style.display = "block";
-      } else {
+      } else { // equal wins
         p1Crown.style.display = "none";
         p2Crown.style.display = "none";
 
@@ -444,10 +469,8 @@ function displayWins(p1Wins, p2Wins) {
 
 
   console.log(`Player 1 Wins: ${p1Wins}, Player 2 Wins: ${p2Wins}`);
-  p1Info.innerText = ` Player 1 \n
-  Wins: ${p1Wins}`;
-  p2Info.innerText = ` Player 2 \n
-  Wins: ${p2Wins}`;
+  p1Info.innerText = ` Player 1 \n Wins: ${p1Wins}`;
+  p2Info.innerText = ` Player 2 \n Wins: ${p2Wins}`;
 }
 /*******************************************************/
 // displayGameOver
@@ -465,6 +488,12 @@ function displayGameOver(gameData) {
 
   guessBtn.disabled = true;
   guessInput.disabled = true;
+
+  const leaveBtn = document.getElementById("leaveBtn");
+  leaveBtn.onclick = () => {
+    cancelDisconnectHandler();
+    window.location.href = "./GTNpage.html";
+  };
 }
 
 /*******************************************************/
@@ -476,9 +505,7 @@ function displayGameOver(gameData) {
 // Return: n/a
 /*******************************************************/
 function saveGameResult(gameData, USERREF) {
-
   get(USERREF).then((snapshot) => {
-
     if (!snapshot.exists()) {
       console.warn("User data not found.");
       return;
@@ -487,7 +514,6 @@ function saveGameResult(gameData, USERREF) {
     const userData = snapshot.val();
 
     let currentWins = userData.GTNwins || 0;
-    let fewestGuesses = userData.GTNFewestGuesses || null;
     let guessAmount = 0;
 
     if (gameData.player1 === currentUser.uid) {
@@ -495,18 +521,19 @@ function saveGameResult(gameData, USERREF) {
     } else if (gameData.player2 === currentUser.uid) {
       guessAmount = gameData.player2Guesses;
     }
+
     update(USERREF, {
       GTNwins: currentWins + 1,
       lastWinGuessCount: guessAmount
+    }).then(() => {
+      updateFewestGuesses(userData, USERREF, guessAmount);
+
+      update(GAMEREF, {
+        resultSaved: true
+      }).then(() => {
+        deleteActiveGame();
+      });
     });
-
-    updateFewestGuesses(userData, USERREF, guessAmount);
-
-    update(GAMEREF, {
-      resultSaved: true
-    });
-
-    console.log("Game result saved.");
   });
 }
 
@@ -593,7 +620,7 @@ function leaveActiveGame() {
       winType: "leave",
       resultSaved: true
     }).then(() => {
-      console.log("Player left the game. Winner declared: " + winnerName);
+      deleteActiveGame();
       window.location.href = "./GTNpage.html";
     });
 
@@ -674,10 +701,23 @@ function checkGameEnd(gameData, USERREF) {
   if (gameData.winType === "guess" && gameData.winner === currentUser.uid && !gameData.resultSaved) {
     saveGameResult(gameData, USERREF);
   }
+
   logPlayerWins(gameData);
   displayGameOver(gameData);
   return true;
 }
+
+/*******************************************************/
+// deleteActiveGame
+// Only called once game is over and all relevant rresults have been saved to Firebase
+// Deletes the active game from Firebase to prevent further interaction and cleans up firebase
+// Input: gameData 
+// Return: N/A
+/*******************************************************/
+function deleteActiveGame() {
+  remove(GAMEREF);
+}
+
 
 /*******************************************************/
 // onDisconHandler
@@ -691,10 +731,23 @@ function onDisconHandler() {
     return;
   }
 
-  const DISCONREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID + "/disconnectedUser");
+  DISCONREF = ref(FB_GAMEDB, "GTN/activeGames/" + gameID + "/disconnectedUser");
 
   onDisconnect(DISCONREF).set(currentUser.uid);
   console.log("discon handler set");
+}
+
+/*******************************************************/
+// cancelDisconnectHandler
+// Cancels the Firebase onDisconnect write so leaving the finished game
+// does not recreate the deleted active game reference.
+// Input: n/a
+// Return: n/a
+/*******************************************************/
+function cancelDisconnectHandler() {
+  if (DISCONREF) {
+    onDisconnect(DISCONREF).cancel();
+  }
 }
 
 /*******************************************************/
@@ -776,6 +829,7 @@ function handleDisconnectWin(winnerUID, gameData) {
     .then(() => {
       console.log("Leave/disconnect win saved for:", winnerUID);
       saveLeaveWin(winnerUID);
+      deleteActiveGame();
     })
     .catch((error) => {
       console.error("Error handling disconnect win:", error);
@@ -800,8 +854,7 @@ function getDisconWinnerName(gameData, winnerUID) {
 
 /*******************************************************/
 // TO DO
-// Turn indicator needs to be improved
-// Display list of guesses for each player to both players
+
 
 
 // OPTIONAL: Add a chat feature for players to talk during the game
