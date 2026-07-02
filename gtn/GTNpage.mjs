@@ -623,14 +623,14 @@ async function lobbyTransfer(lobbyID, lobbyData) {
 
 async function sendToGame(lobbyID) {
   const LOBBYREF = ref(FB_GAMEDB, "GTN/lobbies/" + lobbyID);
-
   await update(LOBBYREF, {
     gameStarted: true
   });
-
-  console.log("Game started for lobby:", lobbyID);
 }
 
 /*******************************************************/
 //TO DO
 // Add a home button with timeout to prevent accidental clicks
+// NAMING CONVENTIONS - module comments - function comments - variable names
+// ADD MODULE / JS FILE BIG COMMENTS
+// REFINE FUNCTIONS

@@ -94,7 +94,7 @@ function GTNpageBtn() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log("Transporting to the GTN game");
-      window.location.href = "../pleasework/GTNpage.html";
+      window.location.href = "../gtn/GTNpage.html";
     } else if (!user) {
       alert("No user found, taking you back to login page");
       window.location.href = "../registration/index.html";

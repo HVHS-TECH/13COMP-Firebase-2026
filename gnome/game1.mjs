@@ -265,26 +265,26 @@ function restartGame() {
 
 export function fb_saveScore() {
   if (score < 0 || score > 700) {
-    console.warn(`Score (${score}) out of valid range (0 to 700). Not saved.`);
-    return;
+    return; // illegal score
   }
   if (!currentUser) {
     console.warn("No authenticated user. Score not saved.");
     return;
   }
 
-  const NAME = currentUser.displayName || currentUser.email; // use Firebase info
-  const RECORDPATH = `userInfo/${NAME}/gnomescore`;
-  const DATAREF = ref(FB_GAMEDB, RECORDPATH);
+  const DATAREF = ref(FB_GAMEDB, "userInfo/" + currentUser.uid);
 
   get(DATAREF)
     .then((snapshot) => {
-      const existingScore = snapshot.exists() ? snapshot.val() : 0;
+      let userData = snapshot.val();
+      const existingScore = userData.gnomescore || 0;
 
       if (score > existingScore) {
-        return set(DATAREF, score).then(() =>
-          console.log(`New high score saved (${score}) at ${RECORDPATH}`)
-        );
+        update(DATAREF, {
+      gnomescore: score
+    });
+
+    console/log(`Score saved: ${score}. Previous score was: ${existingScore}`);
       } else {
         console.log(`Score not saved. Existing score (${existingScore}) is higher or equal.`);
       }
@@ -293,48 +293,6 @@ export function fb_saveScore() {
       console.error("Error accessing or writing score:", error);
     });
 }
-
-// export function menuBtn() {
-//   const btn = document.getElementById("backBtn");
-//   if (!btn) return;
-
-//   let message = document.getElementById("menuMsg");
-//   if (!message) {
-//     message = document.createElement("p");
-//     message.id = "menuMsg";
-//     message.textContent = "⚠️ CLICK AGAIN TO CONFIRM ⚠️";
-
-//     // Styling
-//     message.style.width = btn.offsetWidth + 200 + "px";
-//     message.style.fontSize = "18px";
-//     message.style.fontWeight = "bold";
-//     message.style.color = "#00ffff";
-//     message.style.background = "linear-gradient(90deg, #7092cf, #4b8ccd)"; // gradient background
-//     message.style.padding = "8px 0"; // vertical padding only
-//     message.style.borderRadius = "8px";
-//     message.style.marginTop = "0.5rem";
-//     message.style.display = "none";
-//     message.style.textAlign = "center";
-//     message.style.letterSpacing = "1.5px";
-//     message.style.textShadow = "0 0 6px #00ffff, 0 0 12px #00ccff";
-//     message.style.animation = "pulse 1s infinite alternate";
-
-//     btn.insertAdjacentElement("afterend", message);
-//   }
-
-//   if (!confirmState) {
-//     confirmState = true;
-//     message.style.display = "block";
-
-//     setTimeout(() => {
-//       confirmState = false;
-//       message.style.display = "none";
-//     }, 5000);
-//   } else {
-//     // window.location.href = "../choosegame/choosegame.html";
-//   }
-// }
 /******************************************************/
 // button detections (remove this)
-window.menuBtn = menuBtn;
 window.fb_saveScore = fb_saveScore;
