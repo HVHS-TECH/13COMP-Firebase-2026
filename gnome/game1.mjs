@@ -23,7 +23,7 @@ window.preload = preload;
 window.keyPressed = keyPressed;
 
 import { FB_GAMEDB, FB_AUTH, fb_getPfp } from '../firebase/fb_core.mjs';
-import { ref, query, orderByChild, limitToLast, onValue, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { ref, query, orderByChild, limitToLast, onValue, get, set, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 export let currentUser = null; // will hold the authenticated user object
 /**********************************************************/
@@ -267,6 +267,7 @@ export function fb_saveScore() {
   if (score < 0 || score > 700) {
     return; // illegal score
   }
+
   if (!currentUser) {
     console.warn("No authenticated user. Score not saved.");
     return;
@@ -276,21 +277,25 @@ export function fb_saveScore() {
 
   get(DATAREF)
     .then((snapshot) => {
-      let userData = snapshot.val();
+      const userData = snapshot.val() || {};
       const existingScore = userData.gnomescore || 0;
 
       if (score > existingScore) {
         update(DATAREF, {
-      gnomescore: score
-    });
-
-    console/log(`Score saved: ${score}. Previous score was: ${existingScore}`);
+          gnomescore: score
+        })
+          .then(() => {
+            console.log(`Score saved: ${score}. Previous score was: ${existingScore}`);
+          })
+          .catch((error) => {
+            console.error("Score update failed:", error);
+          });
       } else {
         console.log(`Score not saved. Existing score (${existingScore}) is higher or equal.`);
       }
     })
     .catch((error) => {
-      console.error("Error accessing or writing score:", error);
+      console.error("Error getting existing score:", error);
     });
 }
 /******************************************************/
